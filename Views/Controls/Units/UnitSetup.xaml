@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitSetup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:visual="clr-namespace:Sound2Light.Views.Controls.Visual"
+             xmlns:ui="clr-namespace:Sound2Light.Services.UI"
+             Style="{StaticResource BaseUnitStyle}">
+
+    <Grid>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Margin="4">
+            <visual:PowerButton Width="90" Height="90"/>
+
+        </StackPanel>
+
+
+    </Grid>
+</UserControl>
