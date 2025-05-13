@@ -38,11 +38,13 @@
 
 ## 🏗️ Architektur
 ```plaintext
-RefFactory/
-├── Core/
-│   ├── Audio/          # CaptureDevice, FrequencyAnalyzer, BeatDetector
-│   ├── Dmx/            # SacnSender, ArtNetTransmitter
-│   └── Models/         # DmxUniverse, AudioDeviceConfig
-├── ViewModels/         # Hauptlogik (Mapping, Echtzeit-Analyse)
-├── Views/              # UI für Device-/Kanal-Konfiguration
+Sound2Light/
+├── Assets/
+│   └── Images/         # Background Image u.ä.
+├── Services/
+│   └── UI/             # notwendige Klassen für UI-Elemente
+├── Styles/             # Definition von UI-Elementen, für die kein eigener Code-Behind notwendig ist
+├── Views/
+│   ├── Controls/       # einzele Units (logische UI-Gruppen)
+│   └── Visual/         # einzele "Bedienelemente" wie Button u.ä.
 └── AppConfig/          # JSON-Konfiguration (Universen, Kanal-Mapping)
