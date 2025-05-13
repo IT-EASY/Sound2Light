@@ -10,6 +10,7 @@
                 <!-- ✅ Richtig eingebunden -->
                 <ResourceDictionary Source="Styles/BaseUnitStyle.xaml" />
                 <ResourceDictionary Source="Styles/PhillipsScrewStyle.xaml" />
+                <ResourceDictionary Source="Styles/SetupButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

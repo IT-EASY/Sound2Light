@@ -5,15 +5,119 @@
              xmlns:ui="clr-namespace:Sound2Light.Services.UI"
              Style="{StaticResource BaseUnitStyle}">
 
-    <Grid>
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Margin="4">
-            <visual:PowerButton Width="90" Height="90"/>
+    <Grid Margin="0">
+        <Grid.ColumnDefinitions>
+            <!-- PowerButton -->
+            <ColumnDefinition Width="Auto"/>
+            <!-- SetupButton Audio -->
+            <ColumnDefinition Width="Auto" />
+            <!-- SetupButton artNET -->
+            <ColumnDefinition Width="Auto" />
+            <!-- SetupButton sACN -->
+            <ColumnDefinition Width="Auto" />
+            <!-- SetupButton DMX-512 -->
+            <ColumnDefinition Width="Auto" />
+            <!-- SetupButton MIDI -->
+            <ColumnDefinition Width="Auto" />
+            <!-- Weitere Spalten für mehr Buttons -->
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Buttons -->
+            <RowDefinition Height="Auto"/>
+            <!-- Labels -->
+        </Grid.RowDefinitions>
 
-        </StackPanel>
+        <!-- PowerButton links, über beide Zeilen -->
+        <visual:PowerButton Grid.Row="0" 
+                            Grid.RowSpan="2" 
+                            Grid.Column="0"
+                            Width="75" 
+                            Height="75" 
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0"/>
+        <!-- SetupButton: Audio Source -->
+        <Button Grid.Row="0" 
+                Grid.Column="1"
+                Style="{StaticResource SetupButtonStyle}"
+                Content="Audio"
+                Tag="NotConfigured"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top" 
+                Margin="5,0,0,0" />
+        <!-- Button artNET -->
+        <Button Grid.Row="0" 
+                Grid.Column="2"
+                Style="{StaticResource SetupButtonStyle}"
+                Content="artNET"
+                Tag="NotConfigured"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="10,0,0,0">    
+        </Button>
+        <!-- Button sACN -->
+        <Button Grid.Row="0" 
+                Grid.Column="3"
+                Style="{StaticResource SetupButtonStyle}"
+                Content="sACN"
+                Tag="NotConfigured"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="10,0,0,0">
+        </Button>
+        <!-- Button DMX-512 -->
+        <Button Grid.Row="0" 
+                Grid.Column="4"
+                Style="{StaticResource SetupButtonStyle}"
+                Content="DMX512"
+                Tag="NotConfigured"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="10,0,0,0">
+        </Button>
+        <!-- Button Midi -->
+        <Button Grid.Row="0" 
+                Grid.Column="5"
+                Style="{StaticResource SetupButtonStyle}"
+                Content="midi"
+                Tag="NotConfigured"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="10,0,0,0">
+        </Button>
+        <!-- Label unter den SetupButton -->
+        <Grid Grid.Row="1" Grid.Column="1" 
+              Grid.ColumnSpan="5"
+              Margin="5,0,0,0" 
+              VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
+            <!-- Linie links -->
+            <Border Grid.Column="0"
+                    Height="1" 
+                    Background="Aqua"
+                    VerticalAlignment="Center" 
+                    Margin="0,6,5,0"/>
 
+            <!-- Beschriftung -->
+            <TextBlock Grid.Column="1"
+                       Text="setup component"
+                       FontSize="12"
+                       Foreground="Aqua"
+                       FontWeight="Medium"
+                       VerticalAlignment="Center"/>
+
+            <!-- Linie rechts -->
+            <Border Grid.Column="2" 
+                    Height="1" 
+                    Background="Aqua"
+                    VerticalAlignment="Center"
+                    Margin="5,6,0,0"/>
+        </Grid>
     </Grid>
 </UserControl>

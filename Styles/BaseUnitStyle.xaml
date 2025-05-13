@@ -10,26 +10,26 @@
                             BorderThickness="3"
                             CornerRadius="4"
                             Background="Transparent"
-                            Margin="4">
+                            Margin="1,1,0,0">
 
                         <Grid Background="Transparent">
                             <!-- Fixe 3x3-Grid-Struktur -->
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="25"/>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="25"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="25"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="25"/>
                             </Grid.ColumnDefinitions>
 
                             <!-- 🔩 TOP LEFT -->
                             <Grid Grid.Row="0" Grid.Column="0" Margin="4"
                                   ui:RotationScrewService.InitializeRandomRotation="True">
                                 <Grid Width="20" Height="20">
-                                    <Ellipse Width="20" Height="20">
+                                    <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">
                                                 <GradientStop Color="#EEE" Offset="0.0"/>
@@ -43,8 +43,8 @@
                                         <Ellipse.StrokeThickness>0.8</Ellipse.StrokeThickness>
                                     </Ellipse>
                                     <Grid RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle Width="12" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        <Rectangle Width="2" Height="12" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="10" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="2" Height="10" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -53,7 +53,7 @@
                             <Grid Grid.Row="0" Grid.Column="2" Margin="4"
                                   ui:RotationScrewService.InitializeRandomRotation="True">
                                 <Grid Width="20" Height="20">
-                                    <Ellipse Width="20" Height="20">
+                                    <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">
                                                 <GradientStop Color="#EEE" Offset="0.0"/>
@@ -67,8 +67,8 @@
                                         <Ellipse.StrokeThickness>0.8</Ellipse.StrokeThickness>
                                     </Ellipse>
                                     <Grid RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle Width="12" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        <Rectangle Width="2" Height="12" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="10" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="2" Height="10" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -77,7 +77,7 @@
                             <Grid Grid.Row="2" Grid.Column="0" Margin="4"
                                   ui:RotationScrewService.InitializeRandomRotation="True">
                                 <Grid Width="20" Height="20">
-                                    <Ellipse Width="20" Height="20">
+                                    <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">
                                                 <GradientStop Color="#EEE" Offset="0.0"/>
@@ -91,8 +91,8 @@
                                         <Ellipse.StrokeThickness>0.8</Ellipse.StrokeThickness>
                                     </Ellipse>
                                     <Grid RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle Width="12" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        <Rectangle Width="2" Height="12" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="10" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="2" Height="10" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -101,7 +101,7 @@
                             <Grid Grid.Row="2" Grid.Column="2" Margin="4"
                                   ui:RotationScrewService.InitializeRandomRotation="True">
                                 <Grid Width="20" Height="20">
-                                    <Ellipse Width="20" Height="20">
+                                    <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">
                                                 <GradientStop Color="#EEE" Offset="0.0"/>
@@ -115,8 +115,8 @@
                                         <Ellipse.StrokeThickness>0.8</Ellipse.StrokeThickness>
                                     </Ellipse>
                                     <Grid RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle Width="12" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        <Rectangle Width="2" Height="12" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="10" Height="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Rectangle Width="2" Height="10" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Grid>
                             </Grid>

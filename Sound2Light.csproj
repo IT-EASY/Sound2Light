@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Assets\Logos\**" />
+    <EmbeddedResource Remove="Assets\Logos\**" />
+    <None Remove="Assets\Logos\**" />
+    <Page Remove="Assets\Logos\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\Images\AppBackground.png" />
   </ItemGroup>
 
