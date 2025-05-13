@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitSourceInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:visual="clr-namespace:Sound2Light.Views.Controls.Visual"
+             xmlns:ui="clr-namespace:Sound2Light.Services.UI"
+             Style="{StaticResource BaseUnitStyle}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Content Unit SourceInput -->
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <!-- VU-Meter -->
+            <RowDefinition Height="Auto"/>
+            <!-- Button AutoGain -->
+            <RowDefinition Height="Auto"/>
+            <!-- Button Manual Gain -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <!-- VU-Meter -->
+        <visual:VUMeter31LED Grid.Row="0" 
+                             Grid.Column="0" 
+                             Width="60" 
+                             Height="Auto" 
+                             HorizontalAlignment="Center" 
+                             VerticalAlignment="Top"/>
+
+    </Grid>
+</UserControl>

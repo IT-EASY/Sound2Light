@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sound2Light"
+        xmlns:visual="clr-namespace:Sound2Light.Views.Controls.Visual"
         xmlns:units="clr-namespace:Sound2Light.Views.Controls.Units"
         mc:Ignorable="d"
-        Title="Sound2Light" Height="600" Width="1000">
+        Title="Sound2Light" Height="700" Width="1000">
 
     <!-- 🎨 Hintergrundbild -->
     <Window.Background>
@@ -27,11 +28,24 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <!-- 🔧 Zeile 0 -->
-        <units:UnitSetup         Grid.Row="0" Grid.Column="0" Margin="0"/>
+        <!-- Unit Setup / Unit Output -->
+        <units:UnitSetup         Grid.Row="0" 
+                                 Grid.Column="0"
+                                 Grid.ColumnSpan="2" 
+                                 Width="Auto" 
+                                 Height="Auto" />
+        
+        <!-- Zeile 1 -->
+        <units:UnitSourceInput   Grid.Row="1" 
+                                 Grid.Column="0" 
+                                 Grid.RowSpan="3"
+                                 Width="Auto" 
+                                 Height="Auto" 
+                                 HorizontalAlignment="Left" />
 
     </Grid>
 </Window>
