@@ -17,35 +17,38 @@
 
     <!-- 🧱 UI-Layout -->
     <Grid Margin="0">
-        <!-- 4x4 Gitterstruktur -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+        <Grid Margin="0">
+            <!-- Zeile 0 -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- 🔧 Zeile 0 -->
-        <!-- Unit Setup / Unit Output -->
-        <units:UnitSetup         Grid.Row="0" 
-                                 Grid.Column="0"
-                                 Grid.ColumnSpan="2" 
-                                 Width="Auto" 
-                                 Height="Auto" />
-        
-        <!-- Zeile 1 -->
-        <units:UnitSourceInput   Grid.Row="1" 
-                                 Grid.Column="0" 
-                                 Grid.RowSpan="3"
-                                 Width="Auto" 
-                                 Height="Auto" 
-                                 HorizontalAlignment="Left" />
-
+            <!-- Unit Setup / Unit Output -->
+            <!-- Unit Setup -->
+            <units:UnitSetup Grid.Row="0" 
+                             Grid.Column="0"
+                             Width="Auto" 
+                             Height="Auto" 
+            />
+            <!-- Unit Output -->
+            <!-- Grid.Row="0" Grid.Column="1" -->
+            
+            
+            <!-- Zeile /1  Spalte 0 -->
+            <units:UnitSourceInput   Grid.Row="1" 
+                                     Grid.RowSpan="2"
+                                     Grid.Column="0" 
+                                     Width="auto"
+                                     Height="Auto"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Stretch"
+            />
+        </Grid>
     </Grid>
 </Window>

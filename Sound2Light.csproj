@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
+	<WarningsAsErrors>nullable</WarningsAsErrors>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -16,7 +17,34 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Audio\Disabled\AudioCaptureService.cs" />
+    <Compile Remove="Services\Audio\Disabled\AudioRingBuffer.cs" />
+    <Compile Remove="Services\Audio\Disabled\NAudioWrapper.cs" />
+    <Compile Remove="Services\Mocking\Disabled\DummyAudioService.cs" />
+    <Compile Remove="ViewModels\Setup\Disabled\DeviceSetupViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\Images\AppBackground.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Services\Audio\Disabled\AudioCaptureService.cs" />
+    <None Include="Services\Audio\Disabled\AudioRingBuffer.cs" />
+    <None Include="Services\Audio\Disabled\NAudioWrapper.cs" />
+    <None Include="Services\Mocking\Disabled\DummyAudioService.cs" />
+    <None Include="ViewModels\Setup\Disabled\DeviceSetupViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.5" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="NAudio.Asio" Version="2.2.1" />
+    <PackageReference Include="NAudio.Core" Version="2.2.1" />
+    <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Text.Json" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>
