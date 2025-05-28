@@ -3,11 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Sound2Light"
-        xmlns:visual="clr-namespace:Sound2Light.Views.Controls.Visual"
         xmlns:units="clr-namespace:Sound2Light.Views.Controls.Units"
         mc:Ignorable="d"
-        Title="Sound2Light" Height="700" Width="1000">
+        Title="Sound2Light" Height="800" Width="1200">
 
     <!-- 🎨 Hintergrundbild -->
     <Window.Background>
@@ -15,40 +13,47 @@
                     Stretch="UniformToFill" />
     </Window.Background>
 
-    <!-- 🧱 UI-Layout -->
-    <Grid Margin="0">
-        <Grid Margin="0">
-            <!-- Zeile 0 -->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+    <Grid x:Name="MainLayoutRoot" Margin="5">
+        <!-- Spaltenstruktur -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
 
-            <!-- Unit Setup / Unit Output -->
-            <!-- Unit Setup -->
-            <units:UnitSetup Grid.Row="0" 
-                             Grid.Column="0"
-                             Width="Auto" 
-                             Height="Auto" 
-            />
-            <!-- Unit Output -->
-            <!-- Grid.Row="0" Grid.Column="1" -->
-            
-            
-            <!-- Zeile /1  Spalte 0 -->
-            <units:UnitSourceInput   Grid.Row="1" 
-                                     Grid.RowSpan="2"
-                                     Grid.Column="0" 
-                                     Width="auto"
-                                     Height="Auto"
-                                     HorizontalAlignment="Left"
-                                     VerticalAlignment="Stretch"
-            />
-        </Grid>
+        <!-- Zeilenstruktur -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- UnitSetup in Zeile 0, Spalte 0 + 1 -->
+        <units:UnitSetup Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding UnitSetup}"/>
+        <!-- UnitStatus in Zeile 0, Spalte 3 + 4 -->
+        <units:UnitStatus Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
+        
+        <!-- UnitCapture in Zeile 1 Spalte 0 mit Span über alle verbleibenden Zeilen -->
+        <units:UnitCapture Grid.Row="1" Grid.Column="0" Grid.RowSpan="7" />
+        
+        <!-- UnitS2L  Zeile 1 + 2, Spalte 1 - 4 -->
+        <units:UnitS2L Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+
+        <!-- UnitStem Zeile 4 Spalte 1 -->
+        <units:UnitStem Grid.Row="4" Grid.Column="1" />
+        
+        <!-- UnitB2L Zeile 5 Spalte 1 -->
+        <units:UnitB2L Grid.Row="5" Grid.Column="1" />
+        <!-- UnitCueStep -->
+        <units:UnitCueStep Grid.Row="6" Grid.Column="1" />
+        <!-- UnitBpm -->
+        <units:UnitBpm Grid.Row="7" Grid.Column="1" />
+
     </Grid>
 </Window>

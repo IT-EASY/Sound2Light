@@ -1,27 +1,23 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
+﻿using Sound2Light.Models.Audio;
 
 namespace Sound2Light.Settings
 {
     public class AppSettings
     {
+        public RingBufferSettings RingBuffer { get; set; } = new();
+        public CaptureDeviceConfig? PreferredCaptureDevice { get; set; }
 
-        // VU-Kalibrierungseinstellungen
-        public class CalibrationSettings
+        public List<string> IgnoredAsioDrivers { get; set; } = new()
         {
-            public double SignalFrequencyHz { get; set; } = 1000; // 1kHz
-            public double SignalAmplitude { get; set; } = 0.126; // ≈-18dBFS
-            public CalibrationSignalType SignalType { get; set; } = CalibrationSignalType.Sine;
-        }
-
-        public enum CalibrationSignalType
+            "Steinberg built-in ASIO Driver",
+            "ASIO4ALL",
+            "FL Studio ASIO",
+            "FlexASIO"
+        };
+        public class RingBufferSettings
         {
-            Sine,
-            Noise,
-            Square
+            public int FFTSize { get; set; } = 2048;             // Default: 2048 Samples
+            public int BufferMultiplier { get; set; } = 4;       // Default: 4× FFTSize
         }
     }
 }

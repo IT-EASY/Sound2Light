@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitSelectorB2L"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Style="{StaticResource BaseUnitStyle}">
+    
+    
+    
+    <Grid>
+        <TextBlock Text="Selector B2L"
+                   Foreground="White"
+                   FontWeight="SemiBold"
+                   FontSize="13"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,5"/>
+        <!-- Button-Platzhalter -->
+        <Button Content="B2L 1/2"
+                Background="DarkSlateGray"
+                Foreground="White"
+                FontWeight="Bold"
+                Padding="6,2"
+                HorizontalAlignment="Center"/>
+    </Grid>
+</UserControl>

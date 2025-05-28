@@ -1,0 +1,44 @@
+﻿<!-- Auswahl der Instrumente, die für den Ausgabechannel genutzt werden sollen -->
+<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitStem2L"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Style="{StaticResource BaseUnitStyle}">
+
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <!-- Instrument-Label -->
+            <ColumnDefinition Width="Auto"/>
+            <!-- Feedback-LED -->
+            <ColumnDefinition Width="*" />
+            <!-- Button -->
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Zeile 0 -->
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="1" HorizontalAlignment="Center"/>
+        <Ellipse Grid.Row="0" Grid.Column="1" Width="15" Height="15" Fill="DarkSlateGray" Stroke="Black" StrokeThickness="1"/>
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="Button 1" HorizontalAlignment="Center"/>
+
+        <!-- Zeile 1 -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="2" HorizontalAlignment="Center"/>
+        <Ellipse Grid.Row="1" Grid.Column="1" Width="15" Height="15" Fill="DarkSlateGray" Stroke="Black" StrokeThickness="1"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="Button 2" HorizontalAlignment="Center"/>
+
+        <!-- Zeile 2 -->
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="3" HorizontalAlignment="Center"/>
+        <Ellipse Grid.Row="2" Grid.Column="1" Width="15" Height="15" Fill="DarkSlateGray" Stroke="Black" StrokeThickness="1"/>
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="Button 3" HorizontalAlignment="Center"/>
+
+        <!-- Zeile 3 -->
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="4" HorizontalAlignment="Center"/>
+        <Ellipse Grid.Row="3" Grid.Column="1" Width="15" Height="15" Fill="DarkSlateGray" Stroke="Black" StrokeThickness="1"/>
+        <TextBlock Grid.Row="3" Grid.Column="2" Text="Button 4" HorizontalAlignment="Center"/>
+    </Grid>
+</UserControl>

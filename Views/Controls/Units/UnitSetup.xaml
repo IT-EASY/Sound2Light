@@ -1,96 +1,74 @@
 ﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitSetup"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:visual="clr-namespace:Sound2Light.Views.Controls.Visual"
-             xmlns:ui="clr-namespace:Sound2Light.Services.UI"
+             xmlns:vm="clr-namespace:Sound2Light.ViewModels.Main"
+             xmlns:views="clr-namespace:Sound2Light.Views.Windows"
+             xmlns:local="clr-namespace:Sound2Light.Views.Controls.Units"
              Style="{StaticResource BaseUnitStyle}">
 
-    <Grid Margin="0">
-        <Grid.ColumnDefinitions>
-            <!-- PowerButton -->
-            <ColumnDefinition Width="Auto"/>
-            <!-- SetupButton Audio -->
-            <ColumnDefinition Width="Auto" />
-            <!-- SetupButton artNET -->
-            <ColumnDefinition Width="Auto" />
-            <!-- SetupButton sACN -->
-            <ColumnDefinition Width="Auto" />
-            <!-- SetupButton DMX-512 -->
-            <ColumnDefinition Width="Auto" />
-            <!-- SetupButton MIDI -->
-            <ColumnDefinition Width="Auto" />
-            <!-- Weitere Spalten für mehr Buttons -->
-        </Grid.ColumnDefinitions>
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.RowDefinitions>
+            <!-- 🔧 Zeile für Buttons -->
             <RowDefinition Height="Auto"/>
-            <!-- Buttons -->
+            <!-- 🔷 Zeile für Label + Linie -->
             <RowDefinition Height="Auto"/>
-            <!-- Labels -->
         </Grid.RowDefinitions>
 
-        <!-- PowerButton links, über beide Zeilen -->
-        <visual:PowerButton Grid.Row="0" 
-                            Grid.RowSpan="2" 
-                            Grid.Column="0"
-                            Width="75" 
-                            Height="75" 
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Margin="0,0,10,0"/>
-        <!-- SetupButton: Audio Source -->
-        <Button Grid.Row="0" 
-                Grid.Column="1"
-                Style="{StaticResource SetupButtonStyle}"
-                Content="Audio"
-                Tag="NotConfigured"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top" 
-                Margin="5,0,0,0" />
-        <!-- Button artNET -->
-        <Button Grid.Row="0" 
-                Grid.Column="2"
-                Style="{StaticResource SetupButtonStyle}"
-                Content="artNET"
-                Tag="NotConfigured"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Margin="10,0,0,0">    
-        </Button>
-        <!-- Button sACN -->
-        <Button Grid.Row="0" 
-                Grid.Column="3"
-                Style="{StaticResource SetupButtonStyle}"
-                Content="sACN"
-                Tag="NotConfigured"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Margin="10,0,0,0">
-        </Button>
-        <!-- Button DMX-512 -->
-        <Button Grid.Row="0" 
-                Grid.Column="4"
-                Style="{StaticResource SetupButtonStyle}"
-                Content="DMX512"
-                Tag="NotConfigured"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Margin="10,0,0,0">
-        </Button>
-        <!-- Button Midi -->
-        <Button Grid.Row="0" 
-                Grid.Column="5"
-                Style="{StaticResource SetupButtonStyle}"
-                Content="midi"
-                Tag="NotConfigured"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Margin="10,0,0,0">
-        </Button>
-        <!-- Label unter den SetupButton -->
-        <Grid Grid.Row="1" Grid.Column="1" 
-              Grid.ColumnSpan="5"
-              Margin="5,0,0,0" 
-              VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" /> 
+        </Grid.ColumnDefinitions>
+
+        <!-- 🛠️ Setup-Button: öffnet SetupCaptureWindow (noch leer) -->
+        <Button Grid.Row="0" Grid.Column="0"
+                Margin="0,0,5,0"
+                Content="Capture"
+                Style="{StaticResource ButtonSetupStyle}"
+                Command="{Binding OpenCaptureSetupCommand}" />
+
+        <Button Grid.Row="0" Grid.Column="1"
+                Margin="0,0,5,0"
+                Content="sACN" 
+                Style="{StaticResource ButtonSetupStyle}" 
+                Command="{Binding OpensACNSetupCommand}" />
+        
+        <Button Grid.Row="0" Grid.Column="2" 
+                Margin="0,0,5,0"
+                Content="artNET" 
+                Style="{StaticResource ButtonSetupStyle}" 
+                Command="{Binding OpenartNETSetupCommand}" />
+        
+        <Button Grid.Row="0" Grid.Column="3"
+                Margin="0,0,5,0"
+                Content="DMX"
+                Style="{StaticResource ButtonSetupStyle}" 
+                Command="{Binding OpenDMXSetupCommand}" />
+        
+        <Button Grid.Row="0" Grid.Column="4"
+                Margin="0,0,5,0"
+                Content="S2L" 
+                Style="{StaticResource ButtonSetupStyle}" 
+                Command="{Binding OpenS2LSetupCommand}" />
+        
+        <Button Grid.Row="0" Grid.Column="5"
+                Margin="0,0,5,0"
+                Content="B2L" 
+                Style="{StaticResource ButtonSetupStyle}" 
+                Command="{Binding OpenB2LSetupCommand}" />
+        
+        <Button Grid.Row="0" Grid.Column="6"
+                Margin="0,0,5,0"
+                Content="Midi" 
+                Style="{StaticResource ButtonSetupStyle}" 
+                Command="{Binding OpenMidiSetupCommand}" />
+
+        <!-- 🔹 Abschnittsüberschrift mit Trennlinie -->
+        <Grid Grid.Row="1" Grid.ColumnSpan="7" Margin="0,20,0,0" VerticalAlignment="Stretch" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -98,26 +76,21 @@
             </Grid.ColumnDefinitions>
 
             <!-- Linie links -->
-            <Border Grid.Column="0"
-                    Height="1" 
-                    Background="Aqua"
-                    VerticalAlignment="Center" 
-                    Margin="0,6,5,0"/>
+            <Border BorderBrush="CornflowerBlue"  BorderThickness="0,1,0,0"
+            Height="2" VerticalAlignment="Center"
+            Grid.Column="0" />
 
-            <!-- Beschriftung -->
-            <TextBlock Grid.Column="1"
-                       Text="setup component"
-                       FontSize="12"
-                       Foreground="Aqua"
-                       FontWeight="Medium"
-                       VerticalAlignment="Center"/>
+            <!-- Text -->
+            <TextBlock Text="Component Setup"
+               FontWeight="Bold"
+               Foreground="CornflowerBlue"
+               VerticalAlignment="Center"
+               Margin="10,0" Grid.Column="1"/>
 
             <!-- Linie rechts -->
-            <Border Grid.Column="2" 
-                    Height="1" 
-                    Background="Aqua"
-                    VerticalAlignment="Center"
-                    Margin="5,6,0,0"/>
+            <Border BorderBrush="CornflowerBlue" BorderThickness="0,1,0,0"
+            Height="2" VerticalAlignment="Center"
+            Grid.Column="2" />
         </Grid>
     </Grid>
 </UserControl>

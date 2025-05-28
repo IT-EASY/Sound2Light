@@ -1,0 +1,38 @@
+﻿<!-- Berechnung und Anzeige der 4 Channels für die vier unterschiedlichen Frequenzbänder -->
+    <UserControl x:Class="Sound2Light.Views.Controls.Units.UnitS2L"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Sound2Light.Views.Controls.Units"
+             Style="{StaticResource BaseUnitStyle}">
+
+    <!-- Contentbereich im 3x3 BaseUnitStyle-Raster -->
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Label -->
+            <RowDefinition Height="*" />
+            <!-- Balken -->
+        </Grid.RowDefinitions>
+
+        <!-- 🏷️ Überschrift -->
+        <TextBlock Grid.Row="0"
+                   Text="Sound2Light"
+                   FontSize="14"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,5" />
+
+        <!-- 🔢 Balken für 4 Kanäle -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch"
+                    Margin="10,0">
+            <Rectangle Width="15" Height="60" Fill="DarkSlateGray" Margin="5"/>
+            <Rectangle Width="15" Height="60" Fill="DarkSlateGray" Margin="5"/>
+            <Rectangle Width="15" Height="60" Fill="DarkSlateGray" Margin="5"/>
+            <Rectangle Width="15" Height="60" Fill="DarkSlateGray" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitCapture"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Sound2Light.Views.Controls.Units"
+             Style="{StaticResource BaseUnitStyle}">
+
+    <!-- Innerer Contentbereich innerhalb BaseUnit -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <!-- VU-Meter -->
+            <RowDefinition Height="Auto" />
+            <!-- AutoGain -->
+            <RowDefinition Height="Auto" />
+            <!-- ManualGain -->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <!-- - Button -->
+            <ColumnDefinition Width="*" />
+            <!-- Mittelbereich -->
+            <ColumnDefinition Width="Auto" />
+            <!-- + Button -->
+        </Grid.ColumnDefinitions>
+
+        <!-- 🎚️ VU-Meter Dummy (über alle Spalten) -->
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                   Text="VU-Meter"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Margin="10"/>
+
+        <!-- ⚙️ AutoGain Dummy (zentral, über alle Spalten) -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                   Text="Auto-Gain"
+                   FontSize="14"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Margin="5"/>
+
+        <!-- ➖ Button Dummy -->
+        <TextBlock Grid.Row="2" Grid.Column="0"
+                   Text="➖"
+                   FontSize="18"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Margin="5"/>
+
+        <!-- Manual Gain Dummy Label -->
+        <TextBlock Grid.Row="2" Grid.Column="1"
+                   Text="Manual Gain"
+                   FontSize="14"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Margin="5"/>
+
+        <!-- ➕ Button Dummy -->
+        <TextBlock Grid.Row="2" Grid.Column="2"
+                   Text="➕"
+                   FontSize="18"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Margin="5"/>
+    </Grid>
+</UserControl>

@@ -10,18 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Assets\Logos\**" />
-    <EmbeddedResource Remove="Assets\Logos\**" />
-    <None Remove="Assets\Logos\**" />
-    <Page Remove="Assets\Logos\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Services\Audio\Disabled\AudioCaptureService.cs" />
-    <Compile Remove="Services\Audio\Disabled\AudioRingBuffer.cs" />
-    <Compile Remove="Services\Audio\Disabled\NAudioWrapper.cs" />
-    <Compile Remove="Services\Mocking\Disabled\DummyAudioService.cs" />
-    <Compile Remove="ViewModels\Setup\Disabled\DeviceSetupViewModel.cs" />
+    <Compile Remove="Disabled\**" />
+    <Compile Remove="Services\Audio\Disabled\**" />
+    <Compile Remove="Services\Mocking\**" />
+    <EmbeddedResource Remove="Disabled\**" />
+    <EmbeddedResource Remove="Services\Audio\Disabled\**" />
+    <EmbeddedResource Remove="Services\Mocking\**" />
+    <None Remove="Disabled\**" />
+    <None Remove="Services\Audio\Disabled\**" />
+    <None Remove="Services\Mocking\**" />
+    <Page Remove="Disabled\**" />
+    <Page Remove="Services\Audio\Disabled\**" />
+    <Page Remove="Services\Mocking\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,21 +29,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Services\Audio\Disabled\AudioCaptureService.cs" />
-    <None Include="Services\Audio\Disabled\AudioRingBuffer.cs" />
-    <None Include="Services\Audio\Disabled\NAudioWrapper.cs" />
-    <None Include="Services\Mocking\Disabled\DummyAudioService.cs" />
-    <None Include="ViewModels\Setup\Disabled\DeviceSetupViewModel.cs" />
+    <Page Remove="Styles\SetupButton.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Styles\SetupButton.xaml">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.Asio" Version="2.2.1" />
     <PackageReference Include="NAudio.Core" Version="2.2.1" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Text.Json" Version="9.0.5" />
   </ItemGroup>
 
@@ -51,6 +53,12 @@
     <Resource Include="Assets\Images\AppBackground.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\PhillipsScrewStyle.xaml">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Page>
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,150 @@
+﻿<Window x:Class="Sound2Light.Views.Windows.SetupCaptureWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Setup Capture Device" Height="370" Width="600"
+        Background="CadetBlue"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <!-- Row 0 - Überschrift -->
+            <RowDefinition Height="Auto" />
+            <!-- Label -->
+            <RowDefinition Height="Auto" />
+            <!-- Content -->
+            <RowDefinition Height="Auto" />
+            <!-- Button -->
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Row 0 / Column 0 / 1 - Titel -->
+        <TextBlock Text="Select preferred capture device from the list"
+                   FontSize="14"
+                   FontWeight="Bold"
+                   Grid.Row="0" 
+                   Grid.Column="0" 
+                   Grid.ColumnSpan="2"
+                   Margin="0,0,0,5" />
+
+        <!-- Column 0 / Row 1 - device list box -->
+        <TextBlock Text="available capture devices"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   Grid.Row="1"
+                   Grid.Column="0"
+                   Margin="0,0,0,5" />
+        
+        <!-- Column 1: preferred value -->
+        <TextBlock Text="properties"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   Margin="0,0,0,5" />
+
+        <ListBox x:Name="DeviceList"
+                 ItemsSource="{Binding AvailableDevices}"
+                 SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
+                 DisplayMemberPath="DisplayName"
+                 Background="LightCyan"
+                 FontSize="12" 
+                 FontWeight="Medium"
+                 Grid.Row="2" 
+                 Grid.Column="0"
+                 Margin="0,0,10,6" />
+
+        <StackPanel Grid.Row="2" 
+                    Grid.Column="1" 
+                    VerticalAlignment="Top" >
+            
+            <TextBox Text="{Binding PreferredSampleRate, Mode=OneWay}" 
+                     IsReadOnly="True" 
+                     Margin="0,0,0,2" 
+                     FontSize="12" />
+            
+            <TextBlock Text="Sample Rate (Hz)" 
+                       FontWeight="Bold" 
+                       FontSize="11" 
+                       Margin="0,0,0,5" />
+
+            <TextBox Text="{Binding PreferredBitDepth, Mode=OneWay}" 
+                     IsReadOnly="True" 
+                     Margin="0,0,0,2" 
+                     FontSize="12" />
+            
+            <TextBlock Text="Bit Depth" 
+                       FontWeight="Bold" 
+                       FontSize="11" 
+                       Margin="0,0,0,5" />
+
+            <TextBox Text="{Binding PreferredInputChannels, Mode=OneWay}" 
+                     IsReadOnly="True" 
+                     Margin="0,0,0,2" 
+                     FontSize="12" />
+            
+            <TextBlock Text="Input Channels" 
+                       FontWeight="Bold" 
+                       FontSize="11" 
+                       Margin="0,0,0,5" />
+
+            <TextBox Text="{Binding PreferredBufferSize, Mode=OneWay}" 
+                     IsReadOnly="True" 
+                     Margin="0,0,0,2" 
+                     FontSize="12" />
+            
+            <TextBlock Text="Buffer Size (ASIO only)" 
+                       FontWeight="Bold" 
+                       FontSize="11" 
+                       Margin="0,0,0,5" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                <StackPanel Width="90" Margin="0,0,10,0">
+                    <ComboBox ItemsSource="{Binding FFTSizes}"
+                  SelectedItem="{Binding SelectedFFTSize, Mode=TwoWay}"
+                  FontSize="12" />
+                    <TextBlock Text="FFT Size"
+                   FontWeight="Bold"
+                   FontSize="11"
+                   Margin="0,0,0,5" />
+                </StackPanel>
+
+                <StackPanel Width="90">
+                    <ComboBox ItemsSource="{Binding BufferMultipliers}"
+                  SelectedItem="{Binding SelectedBufferMultiplier, Mode=TwoWay}"
+                  FontSize="12" />
+                    <TextBlock Text="Buffer Multiplier"
+                   FontWeight="Bold"
+                   FontSize="11"
+                   Margin="0,0,0,5" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3"
+                    Grid.Column="0" 
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0" >
+
+            <Button Content="Set as Preferred"
+                    Width="120"
+                    Command="{Binding SaveAndCloseCommand}"
+                    Margin="0,0,8,0" />
+
+            <Button Content="Use Temporarily"
+                    Width="120"
+                    Command="{Binding SaveSessionOnlyCommand}"
+                    Margin="0,0,8,0" />
+
+            <Button Content="Cancel"
+                    Width="90"
+                    Command="{Binding CancelCommand}" 
+                    Margin="0,0,8,0" />
+        </StackPanel>
+    </Grid>
+</Window>

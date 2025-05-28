@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitB2L"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Sound2Light.Views.Controls.Units"
+             Style="{StaticResource BaseUnitStyle}">
+
+    <!-- Contentbereich im 3x3 BaseUnitStyle-Raster -->
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Label -->
+            <RowDefinition Height="Auto"/>
+            <!-- LED -->
+        </Grid.RowDefinitions>
+
+        <!-- 🏷️ Überschrift -->
+        <TextBlock Grid.Row="0"
+                   Text="Beat2Light"
+                   FontSize="14"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,5" />
+
+        <!-- 🔴 Dummy Feedback-LED -->
+        <Ellipse Grid.Row="1"
+                 Width="20"
+                 Height="20"
+                 Fill="DarkRed"
+                 Stroke="Black"
+                 StrokeThickness="1"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

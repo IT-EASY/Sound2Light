@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitStatus"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Sound2Light.ViewModels.Main"
+             Style="{StaticResource BaseUnitStyle}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Zeile 0: Status-Anzeigen -->
+        <TextBlock Text="LED" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="001" Grid.Row="0" Grid.Column="1" Foreground="LimeGreen" FontFamily="Consolas" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="004" Grid.Row="0" Grid.Column="2" Foreground="Orange" FontFamily="Consolas" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="LED" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="LED" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock Text="LED" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <!-- PowerButton (Column 6, über beide Zeilen) -->
+        <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="6"
+      Width="65" Height="65"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
+      DataContext="{Binding PowerButton}">
+
+            <!-- 👂 Mausaktionen via Commands -->
+            <Grid.InputBindings>
+                <MouseBinding MouseAction="RightDoubleClick"
+                      Command="{Binding StartUnlockCommand}" />
+                <MouseBinding MouseAction="LeftClick"
+                      Command="{Binding AttemptShutdownCommand}" />
+            </Grid.InputBindings>
+
+            <!-- 🎨 Visualer Button mit Glow -->
+            <Border CornerRadius="12"
+            BorderThickness="3"
+            BorderBrush="{Binding BorderBrushDynamic}">
+                <Border.Background>
+                    <RadialGradientBrush RadiusX="0.7" RadiusY="0.7" GradientOrigin="0.5,0.5">
+                        <GradientStop Color="{Binding ButtonCenterColor}" Offset="0.0"/>
+                        <GradientStop Color="{Binding ButtonEdgeColor}" Offset="1.0"/>
+                    </RadialGradientBrush>
+                </Border.Background>
+                <Border.Effect>
+                    <DropShadowEffect Color="{Binding GlowColor.Color}"
+                              BlurRadius="{Binding GlowRadius}"
+                              ShadowDepth="0"
+                              Opacity="0.4" />
+                </Border.Effect>
+            </Border>
+
+            <!-- 📝 Text + 🔓/🔒 Symbol -->
+            <Grid>
+                <TextBlock Text="{Binding ButtonText}"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Foreground="#B0FF66"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+
+                <TextBlock Text="{Binding LockIcon}"
+                   FontSize="14"
+                   Foreground="Gold"
+                   Margin="0,0,8,8"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Bottom" />
+            </Grid>
+        </Grid>
+
+        <!-- Zeile 1: Labels -->
+        <TextBlock Text="ASIO/WASAPI" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" FontSize="12" Foreground="DeepSkyBlue"/>
+        <TextBlock Text="sACN" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" FontSize="12" Foreground="DeepSkyBlue"/>
+        <TextBlock Text="artNET" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" FontSize="12" Foreground="DeepSkyBlue"/>
+        <TextBlock Text="Capture" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" FontSize="12" Foreground="DeepSkyBlue"/>
+        <TextBlock Text="Buffer" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" FontSize="12" Foreground="DeepSkyBlue"/>
+        <TextBlock Text="Valid" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" FontSize="12" Foreground="DeepSkyBlue"/>
+    </Grid>
+</UserControl>

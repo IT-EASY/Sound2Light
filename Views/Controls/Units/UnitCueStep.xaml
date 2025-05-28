@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitCueStep"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Style="{StaticResource BaseUnitStyle}">
+
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Label -->
+        <TextBlock Grid.Column="0"
+                   Text="Cue-Step"
+                   FontSize="14"
+                   FontWeight="Bold"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   Margin="5,0"/>
+
+        <!-- Divisor-Button Dummy -->
+        <TextBlock Grid.Column="1"
+                   Text="÷4"
+                   FontSize="14"
+                   Background="DarkSlateGray"
+                   Foreground="White"
+                   Padding="8,2"
+                   Margin="5"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"/>
+
+        <!-- Feedback-LED Dummy -->
+        <Ellipse Grid.Column="2"
+                 Width="18"
+                 Height="18"
+                 Fill="DarkRed"
+                 Stroke="Black"
+                 StrokeThickness="1"
+                 Margin="5"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Center"/>
+    </Grid>
+</UserControl>

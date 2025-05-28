@@ -8,21 +8,15 @@
                       ShadowDepth="0"
                       Opacity="0.35"/>
 
-    <DropShadowEffect x:Key="GreenShadow"
-                      Color="#66FF66"
-                      BlurRadius="10"
-                      ShadowDepth="0"
-                      Opacity="0.35"/>
-
     <!-- Style für rechteckigen plastischen SetupButton -->
-    <Style x:Key="SetupButtonStyle" TargetType="Button">
-        <Setter Property="Width" Value="35"/>
-        <Setter Property="Height" Value="25"/>
+    <Style x:Key="ButtonSetupStyle" TargetType="Button">
+        <Setter Property="Width" Value="55"/>
+        <Setter Property="Height" Value="30"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#FF8000"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="CornflowerBlue"/>
+        <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="Template">
@@ -37,8 +31,8 @@
                                 Effect="{StaticResource OrangeShadow}">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Color="#E68A00" Offset="0"/>
-                                    <GradientStop Color="#994C00" Offset="1"/>
+                                    <GradientStop Color="DarkSlateBlue"  Offset="0"/>
+                                    <GradientStop Color="DarkBlue" Offset="1"/>
                                 </LinearGradientBrush>
                             </Border.Background>
                         </Border>
@@ -46,7 +40,7 @@
                         <!-- Glanzeffekt oben -->
                         <Ellipse Margin="4"
                                  VerticalAlignment="Top"
-                                 Height="12"
+                                 Height="10"
                                  Fill="#40FFFFFF"
                                  IsHitTestVisible="False"
                                  Stretch="Fill"/>
@@ -57,21 +51,8 @@
                                           RecognizesAccessKey="True"/>
                     </Grid>
 
-                    <!-- Trigger für Konfigurationsstatus und Maus -->
+                    <!-- Trigger für Mausverhalten -->
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Configured">
-                            <Setter TargetName="GlowBorder" Property="Background">
-                                <Setter.Value>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                        <GradientStop Color="#3BAA3B" Offset="0"/>
-                                        <GradientStop Color="#165C16" Offset="1"/>
-                                    </LinearGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter TargetName="GlowBorder" Property="BorderBrush" Value="#1AAA1A"/>
-                            <Setter TargetName="GlowBorder" Property="Effect" Value="{StaticResource GreenShadow}"/>
-                        </DataTrigger>
-
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="GlowBorder" Property="Opacity" Value="0.9"/>
                         </Trigger>
