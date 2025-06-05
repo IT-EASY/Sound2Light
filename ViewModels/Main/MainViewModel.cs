@@ -1,4 +1,5 @@
 ﻿using Sound2Light.ViewModels.Units;
+using Sound2Light.Views.Controls.Units;
 
 namespace Sound2Light.ViewModels.Main
 {
@@ -6,12 +7,15 @@ namespace Sound2Light.ViewModels.Main
     {
         public PowerButtonViewModel PowerButton { get; }
         public UnitSetupViewModel UnitSetup { get; }
+        public UnitCaptureViewModel UnitCapture { get; }
 
         public MainViewModel(PowerButtonViewModel powerButtonViewModel, 
-                             UnitSetupViewModel unitSetupViewModel)
+                             UnitSetupViewModel unitSetupViewModel,
+                             UnitCaptureViewModel unitCaptureViewModel)
         {
             PowerButton = powerButtonViewModel;
             UnitSetup = unitSetupViewModel;
+            UnitCapture = unitCaptureViewModel;
         }
     }
 }

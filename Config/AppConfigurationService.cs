@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
+using Sound2Light.Config;
 using Sound2Light.Settings;
 
 namespace Sound2Light.Config
@@ -12,10 +15,17 @@ namespace Sound2Light.Config
 
         public AppSettings Settings { get; private set; }
 
+        private readonly JsonSerializerOptions _serializerOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() },
+            WriteIndented = true
+        };
+
         public AppConfigurationService(string configFilePath)
         {
             _configFilePath = configFilePath;
-            Settings = new AppSettings(); // immer initialisiert
+            Settings = new AppSettings();
         }
 
         public void LoadConfiguration()
@@ -24,20 +34,20 @@ namespace Sound2Light.Config
             {
                 if (!File.Exists(_configFilePath))
                 {
-                    Settings = new AppSettings();
+                    Debug.WriteLine($"[AppSettings] Datei nicht gefunden: {_configFilePath}");
                     return;
                 }
 
                 var json = File.ReadAllText(_configFilePath);
-                var loaded = JsonSerializer.Deserialize<AppSettings>(json);
+                Settings = JsonSerializer.Deserialize<AppSettings>(json, _serializerOptions) ?? new AppSettings();
 
-                Settings = loaded ?? new AppSettings();
+                Debug.WriteLine("[AppSettings] Konfiguration erfolgreich geladen.");
             }
             catch (Exception ex)
             {
                 Settings = new AppSettings();
-                Console.Error.WriteLine($"Fehler beim Laden der Konfiguration: {ex.Message}");
-                // TODO: LoggingService/EventLog einbinden
+                Debug.WriteLine($"[AppSettings] Fehler beim Laden der Konfiguration: {ex.Message}");
+                Debug.WriteLine($"[AppSettings] StackTrace: {ex.StackTrace}");
             }
         }
 
@@ -51,17 +61,12 @@ namespace Sound2Light.Config
                     Directory.CreateDirectory(directory!);
                 }
 
-                var json = JsonSerializer.Serialize(Settings, new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
-
+                var json = JsonSerializer.Serialize(Settings, _serializerOptions);
                 File.WriteAllText(_configFilePath, json);
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Fehler beim Speichern der Konfiguration: {ex.Message}");
-                // TODO: LoggingService/EventLog einbinden
             }
         }
     }

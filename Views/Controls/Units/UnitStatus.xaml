@@ -30,7 +30,7 @@
 
         <!-- PowerButton (Column 6, über beide Zeilen) -->
         <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="6"
-      Width="65" Height="65"
+      Width="60" Height="60"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
       DataContext="{Binding PowerButton}">

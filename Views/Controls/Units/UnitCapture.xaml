@@ -1,68 +1,59 @@
-﻿<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitCapture"
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="Sound2Light.Views.Controls.Units.UnitCapture"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Sound2Light.Views.Controls.Units"
-             Style="{StaticResource BaseUnitStyle}">
+             xmlns:skia="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
+             Style="{StaticResource BaseUnitStyle}" >
 
     <!-- Innerer Contentbereich innerhalb BaseUnit -->
-    <Grid>
+    <Grid HorizontalAlignment="Center">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <!-- VU-Meter -->
-            <RowDefinition Height="Auto" />
-            <!-- AutoGain -->
-            <RowDefinition Height="Auto" />
-            <!-- ManualGain -->
+            <RowDefinition Height="20"/>
+            <!-- Beschriftung -->
+            <RowDefinition Height="400"/>
+            <!-- VU-Anzeige -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <!-- - Button -->
-            <ColumnDefinition Width="*" />
-            <!-- Mittelbereich -->
-            <ColumnDefinition Width="Auto" />
-            <!-- + Button -->
+            <ColumnDefinition Width="20"/>
+            <!-- Linke LEDs -->
+            <ColumnDefinition Width="36"/>
+            <!-- Skala -->
+            <ColumnDefinition Width="20"/>
+            <!-- Rechte LEDs -->
         </Grid.ColumnDefinitions>
 
-        <!-- 🎚️ VU-Meter Dummy (über alle Spalten) -->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                   Text="VU-Meter"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Margin="10"/>
+        <!-- Beschriftung -->
+        <TextBlock Text="L"
+               Grid.Row="0" Grid.Column="0"
+               HorizontalAlignment="Center"
+               FontWeight="Bold"
+               Foreground="White" />
 
-        <!-- ⚙️ AutoGain Dummy (zentral, über alle Spalten) -->
-        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                   Text="Auto-Gain"
-                   FontSize="14"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Margin="5"/>
+        <TextBlock Text="dB"
+               Grid.Row="0" Grid.Column="1"
+               HorizontalAlignment="Center"
+               FontWeight="Bold"
+               Foreground="White" />
 
-        <!-- ➖ Button Dummy -->
-        <TextBlock Grid.Row="2" Grid.Column="0"
-                   Text="➖"
-                   FontSize="18"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Margin="5"/>
+        <TextBlock Text="R"
+               Grid.Row="0" Grid.Column="2"
+               HorizontalAlignment="Center"
+               FontWeight="Bold"
+               Foreground="White" />
 
-        <!-- Manual Gain Dummy Label -->
-        <TextBlock Grid.Row="2" Grid.Column="1"
-                   Text="Manual Gain"
-                   FontSize="14"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Margin="5"/>
+        <!-- SkiaSharp-Elemente -->
+        <skia:SKElement x:Name="LeftVuMeterCanvas"
+                        Grid.Row="1" Grid.Column="0"
+                        PaintSurface="LeftVuMeterCanvas_PaintSurface" />
 
-        <!-- ➕ Button Dummy -->
-        <TextBlock Grid.Row="2" Grid.Column="2"
-                   Text="➕"
-                   FontSize="18"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Margin="5"/>
+        <skia:SKElement x:Name="ScaleCanvas"
+                        Grid.Row="1" Grid.Column="1"
+                        PaintSurface="ScaleCanvas_PaintSurface" />
+
+        <skia:SKElement x:Name="RightVuMeterCanvas"
+                        Grid.Row="1" Grid.Column="2"
+                        PaintSurface="RightVuMeterCanvas_PaintSurface" />
     </Grid>
 </UserControl>

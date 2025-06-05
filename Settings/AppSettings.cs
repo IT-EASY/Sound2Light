@@ -1,23 +1,36 @@
-﻿using Sound2Light.Models.Audio;
+﻿using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
-namespace Sound2Light.Settings
+using Sound2Light.Models.Audio;
+
+namespace Sound2Light.Settings;
+
+public class AppSettings
 {
-    public class AppSettings
-    {
-        public RingBufferSettings RingBuffer { get; set; } = new();
-        public CaptureDeviceConfig? PreferredCaptureDevice { get; set; }
+    /// <summary>
+    /// Prüfung, ob ASIO-Treiber isntalliert sind.
+    public bool AsioAvailable { get; set; } = false;
 
-        public List<string> IgnoredAsioDrivers { get; set; } = new()
-        {
-            "Steinberg built-in ASIO Driver",
-            "ASIO4ALL",
-            "FL Studio ASIO",
-            "FlexASIO"
-        };
-        public class RingBufferSettings
-        {
-            public int FFTSize { get; set; } = 2048;             // Default: 2048 Samples
-            public int BufferMultiplier { get; set; } = 4;       // Default: 4× FFTSize
-        }
-    }
+    /// <summary>
+    /// Bevorzugtes Aufnahmegerät (wird gespeichert).
+    /// </summary>
+    public AudioDevice? PreferredCaptureDevice { get; set; }
+
+    /// <summary>
+    /// Aktuell verwendetes Gerät zur Laufzeit.
+    /// </summary>
+    [JsonIgnore]
+    public AudioDevice? CurrentDevice { get; set; }
+
+    /// <summary>
+    /// Verfügbare Geräte zur Laufzeit (ASIO/WASAPI).
+    /// </summary>
+    [JsonIgnore]
+    public ObservableCollection<AudioDevice> AvailableDevices { get; set; } = new();
+
+
+    /// <summary>
+    /// Einstellungen für den internen Audio-Ringpuffer.
+    /// </summary>
+    public RingBufferSettings RingBufferSettings { get; set; } = new();
 }

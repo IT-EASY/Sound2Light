@@ -16,20 +16,20 @@
                         <Grid Background="Transparent">
                             <!-- Fixe 3x3-Grid-Struktur -->
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="27"/>
+                                <RowDefinition Height="30"/>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height="27"/>
+                                <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="27"/>
+                                <ColumnDefinition Width="30"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="27"/>
+                                <ColumnDefinition Width="30"/>
                             </Grid.ColumnDefinitions>
 
                             <!-- 🔩 TOP LEFT -->
-                            <Grid Grid.Row="0" Grid.Column="0" Margin="4"
+                            <Grid Grid.Row="0" Grid.Column="0" Margin="1"
                                   ui:ScrewRotationService.InitializeRandomRotation="True">
-                                <Grid Width="20" Height="20">
+                                <Grid Width="30" Height="30">
                                     <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">
@@ -51,9 +51,9 @@
                             </Grid>
 
                             <!-- 🔩 TOP RIGHT -->
-                            <Grid Grid.Row="0" Grid.Column="2" Margin="4"
+                            <Grid Grid.Row="0" Grid.Column="2" Margin="1"
                                   ui:ScrewRotationService.InitializeRandomRotation="True">
-                                <Grid Width="20" Height="20">
+                                <Grid Width="30" Height="30">
                                     <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">
@@ -75,9 +75,9 @@
                             </Grid>
 
                             <!-- 🔩 BOTTOM LEFT -->
-                            <Grid Grid.Row="2" Grid.Column="0" Margin="4"
+                            <Grid Grid.Row="2" Grid.Column="0" Margin="1"
                                   ui:ScrewRotationService.InitializeRandomRotation="True">
-                                <Grid Width="20" Height="20">
+                                <Grid Width="30" Height="30">
                                     <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">
@@ -99,9 +99,9 @@
                             </Grid>
 
                             <!-- 🔩 BOTTOM RIGHT -->
-                            <Grid Grid.Row="2" Grid.Column="2" Margin="4"
+                            <Grid Grid.Row="2" Grid.Column="2" Margin="1"
                                   ui:ScrewRotationService.InitializeRandomRotation="True">
-                                <Grid Width="20" Height="20">
+                                <Grid Width="30" Height="30">
                                     <Ellipse Width="18" Height="18">
                                         <Ellipse.Fill>
                                             <RadialGradientBrush GradientOrigin="0.3,0.3">

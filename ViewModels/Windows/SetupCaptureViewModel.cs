@@ -1,131 +1,104 @@
-﻿using System;
+﻿using Sound2Light.Config;
+using Sound2Light.Models.Audio;
+using Sound2Light.Contracts.Services.Devices;
+using Sound2Light.Helpers.UI;
+using Sound2Light.Services.Devices;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Linq;
-using System.Collections.Generic;
 
-using Sound2Light.Models.Audio;
-using Sound2Light.Services.Audio;
-using Sound2Light.Helpers.UI;
-using Sound2Light.Config;
-using Sound2Light.Settings;
-
-namespace Sound2Light.ViewModels.Windows
+public class SetupCaptureViewModel : INotifyPropertyChanged
 {
-    public class SetupCaptureViewModel : INotifyPropertyChanged
-    {
-        public ObservableCollection<DeviceInfo> AvailableDevices { get; } = new();
+    private readonly IAppConfigurationService _config;
+    private readonly IAsioDriverEnumerator _asioEnumerator;
+    private readonly IWasapiDeviceDiscovery _wasapiDiscovery;
+    private readonly Action _closeCallback;
 
-        private DeviceInfo? _selectedDevice;
-        public DeviceInfo? SelectedDevice
+    public ObservableCollection<DisplayDevice> AvailableDevices { get; } = new();
+
+    private DisplayDevice? _selectedDevice;
+    public DisplayDevice? SelectedDevice
+    {
+        get => _selectedDevice;
+        set
         {
-            get => _selectedDevice;
-            set
+            if (_selectedDevice != value)
             {
-                if (_selectedDevice != value)
-                {
-                    _selectedDevice = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(PreferredSampleRate));
-                    OnPropertyChanged(nameof(PreferredBitDepth));
-                    OnPropertyChanged(nameof(PreferredInputChannels));
-                    OnPropertyChanged(nameof(PreferredBufferSize));
-                }
+                _selectedDevice = value;
+                OnPropertyChanged();
             }
         }
+    }
 
-        public int? PreferredSampleRate => SelectedDevice?.PreferredSampleRate;
-        public int? PreferredBitDepth => SelectedDevice?.PreferredBitDepth;
-        public int? PreferredInputChannels => SelectedDevice?.PreferredInputChannels;
-        public int? PreferredBufferSize => SelectedDevice?.PreferredBufferSize;
+    public string DummyDeviceName => "[Kein Gerät verfügbar – Setup vorbereitet]";
 
-        public List<int> FFTSizes { get; } = new() { 256, 512, 1024, 2048, 4096 };
-        public List<int> BufferMultipliers { get; } = new() { 1, 2, 3, 4, 5 };
+    public int SelectedFFTSize { get; set; } = 1024;
+    public int SelectedBufferMultiplier { get; set; } = 2;
 
-        private int _selectedFFTSize;
-        public int SelectedFFTSize
-        {
-            get => _selectedFFTSize;
-            set => SetProperty(ref _selectedFFTSize, value);
-        }
+    public ICommand ApplyTemporaryCommand { get; }
+    public ICommand SaveAndCloseCommand { get; }
 
-        private int _selectedBufferMultiplier;
-        public int SelectedBufferMultiplier
-        {
-            get => _selectedBufferMultiplier;
-            set => SetProperty(ref _selectedBufferMultiplier, value);
-        }
+    public SetupCaptureViewModel(
+        IAppConfigurationService config,
+        IAsioDriverEnumerator asioEnumerator,
+        IWasapiDeviceDiscovery wasapiDiscovery,
+        Action closeCallback)
+    {
+        _config = config;
+        _asioEnumerator = asioEnumerator;
+        _wasapiDiscovery = wasapiDiscovery;
+        _closeCallback = closeCallback;
 
-        public ICommand CancelCommand { get; }
-        public ICommand SaveSessionOnlyCommand { get; }
-        public ICommand SaveAndCloseCommand { get; }
+        ApplyTemporaryCommand = new RelayCommand(_ => ApplyTemporaryDevice());
+        SaveAndCloseCommand = new RelayCommand(_ => SaveAndClose());
 
-        private readonly Action _closeAction;
-        private readonly IAppConfigurationService _configService;
+        LoadDevices();
+    }
 
-        public SetupCaptureViewModel(IAppConfigurationService configService, Action closeAction)
-        {
-            _configService = configService;
-            _closeAction = closeAction;
+    private void LoadDevices()
+    {
+        AvailableDevices.Clear();
 
-            CancelCommand = new RelayCommand(_ => _closeAction());
-            SaveSessionOnlyCommand = new RelayCommand(_ => ApplyTemporaryDevice());
-            SaveAndCloseCommand = new RelayCommand(_ => SaveAndClose());
+        var asio = _asioEnumerator.GetAvailableAsioDevices();
+        var wasapi = _wasapiDiscovery.GetWasapiDevices();
 
-            var devices = AudioDeviceDiscovery
-                .GetAsioDevices(_configService.Settings)
-                .Concat(AudioDeviceDiscovery.GetWasapiDevices());
+        foreach (var device in asio)
+            AvailableDevices.Add(new DisplayDevice(device, "[ASIO]"));
 
-            foreach (var device in devices)
-                AvailableDevices.Add(device);
+        foreach (var device in wasapi)
+            AvailableDevices.Add(new DisplayDevice(device, "[WASAPI]"));
 
-            if (AvailableDevices.Any())
-                SelectedDevice = AvailableDevices.First();
+        SelectedDevice = AvailableDevices.FirstOrDefault();
+    }
 
-            // 🧠 FFT + Multiplier aus gespeicherter Konfiguration übernehmen
-            SelectedFFTSize = _configService.Settings.RingBuffer.FFTSize;
-            SelectedBufferMultiplier = _configService.Settings.RingBuffer.BufferMultiplier;
-        }
+    private void ApplyTemporaryDevice()
+    {
+        // später: temporär aktivieren
+    }
 
-        private void ApplyTemporaryDevice()
-        {
-            if (SelectedDevice == null)
-                return;
+    private void SaveAndClose()
+    {
+        ApplyTemporaryDevice();
+        _closeCallback.Invoke();
+    }
 
-            _configService.Settings.PreferredCaptureDevice = new CaptureDeviceConfig
-            {
-                Name = SelectedDevice.Name,
-                Type = SelectedDevice.Type,
-                SampleRate = SelectedDevice.PreferredSampleRate ?? 0,
-                BitDepth = SelectedDevice.PreferredBitDepth ?? 0,
-                Channels = SelectedDevice.PreferredInputChannels ?? 0,
-                BufferSize = SelectedDevice.PreferredBufferSize ?? 0
-            };
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+}
 
-            _configService.Settings.RingBuffer.FFTSize = SelectedFFTSize;
-            _configService.Settings.RingBuffer.BufferMultiplier = SelectedBufferMultiplier;
+public class DisplayDevice
+{
+    public string DisplayName { get; }
+    public AudioDevice Device { get; }
 
-            _closeAction();
-        }
-
-        private void SaveAndClose()
-        {
-            ApplyTemporaryDevice();
-            _configService.SaveConfiguration();
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
+    public DisplayDevice(AudioDevice device, string prefix)
+    {
+        Device = device;
+        DisplayName = $"{prefix} {device.Name}";
     }
 }

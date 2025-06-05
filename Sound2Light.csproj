@@ -1,64 +1,56 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-	<WarningsAsErrors>nullable</WarningsAsErrors>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+    	<WarningsAsErrors>nullable</WarningsAsErrors>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+    	<SkiaSharpEnableCompatibility>true</SkiaSharpEnableCompatibility>
+    	<Configurations>Debug;Release;Debug x64</Configurations>
+    	<Platforms>x64</Platforms>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Disabled\**" />
-    <Compile Remove="Services\Audio\Disabled\**" />
-    <Compile Remove="Services\Mocking\**" />
-    <EmbeddedResource Remove="Disabled\**" />
-    <EmbeddedResource Remove="Services\Audio\Disabled\**" />
-    <EmbeddedResource Remove="Services\Mocking\**" />
-    <None Remove="Disabled\**" />
-    <None Remove="Services\Audio\Disabled\**" />
-    <None Remove="Services\Mocking\**" />
-    <Page Remove="Disabled\**" />
-    <Page Remove="Services\Audio\Disabled\**" />
-    <Page Remove="Services\Mocking\**" />
-  </ItemGroup>
+<PropertyGroup>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Assets\Images\AppBackground.png" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="Assets\Images\AppBackground.png" />
+	</ItemGroup>
+	
+	<ItemGroup>
+        <Page Remove="Styles\SetupButton.xaml" />
+	</ItemGroup>
+		
+	<ItemGroup>
+		<None Include="Styles\SetupButton.xaml">
+			<CopyToOutputDirectory>
+				
+			</CopyToOutputDirectory>
+        </None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Remove="Styles\SetupButton.xaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="CSCore" Version="1.2.1.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
+        <PackageReference Include="SkiaSharp.Views.WPF" Version="2.80.3" />
+        <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
+        <PackageReference Include="System.Text.Json" Version="9.0.5" />
+	</ItemGroup>
+	
+	<ItemGroup>
+        <Resource Include="Assets\Images\AppBackground.png">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="Styles\SetupButton.xaml">
-      <CopyToOutputDirectory></CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.5" />
-    <PackageReference Include="NAudio" Version="2.2.1" />
-    <PackageReference Include="NAudio.Asio" Version="2.2.1" />
-    <PackageReference Include="NAudio.Core" Version="2.2.1" />
-    <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
-    <PackageReference Include="System.Text.Json" Version="9.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Assets\Images\AppBackground.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="Styles\PhillipsScrewStyle.xaml">
-      <CopyToOutputDirectory></CopyToOutputDirectory>
-    </Page>
-  </ItemGroup>
-
+	<ItemGroup>
+        <Page Update="Styles\PhillipsScrewStyle.xaml">
+          <CopyToOutputDirectory></CopyToOutputDirectory>
+        </Page>
+	</ItemGroup>
 </Project>

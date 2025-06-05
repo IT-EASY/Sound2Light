@@ -1,18 +1,14 @@
-﻿// Sound2Light/App.xaml.cs
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Sound2Light.Startup;
 using Sound2Light.ViewModels.Main;
 using Sound2Light.ViewModels.Units;
 using Sound2Light.Services.UI;
 using Sound2Light.Services.System;
 using Sound2Light.Config;
-using Sound2Light.Settings;
-
-using System;
 using System.IO;
 using System.Windows;
-using Sound2Light.ViewModels.Windows;
-using Sound2Light.Services.Audio;
+using Sound2Light.Services.Devices;
+using Sound2Light.Contracts.Services.Devices;
 
 namespace Sound2Light
 {
@@ -26,49 +22,52 @@ namespace Sound2Light
         {
             base.OnStartup(e);
 
-            // 🔧 Schritt 1: DI konfigurieren und ServiceProvider erstellen
             var serviceCollection = new ServiceCollection();
 
-            // 🧩 Konfigurationspfad festlegen (AppData → Sound2Light\appsettings.json)
+            // Konfigurationspfad
             var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var configDir = Path.Combine(appDataPath, "Sound2Light");
             var configFilePath = Path.Combine(configDir, "appsettings.json");
 
-            // 🧩 Konfigurations-Service als Singleton registrieren
+            // Konfigurations-Service
             serviceCollection.AddSingleton<IAppConfigurationService>(provider =>
             {
                 var configService = new AppConfigurationService(configFilePath);
-                configService.LoadConfiguration(); // direkt beim Start laden
+                configService.LoadConfiguration();
                 return configService;
             });
 
-            // 🧩 Services & Logik
+            // AppSettings direkt bereitstellen
+            serviceCollection.AddSingleton(provider =>
+                provider.GetRequiredService<IAppConfigurationService>().Settings);
+
+            // UI-Dienste
             serviceCollection.AddSingleton<IApplicationShutdownService, ApplicationShutdownService>();
             serviceCollection.AddSingleton<IPowerButtonStateService, PowerButtonStateService>();
-            // 🧩 Geräte-Erkennung (ASIO/WASAPI)
-            serviceCollection.AddSingleton<IAudioDeviceService, AudioDeviceService>();
 
+            // Systemdienste
+            serviceCollection.AddSingleton<IAsioDetectionService, AsioDetectionService>();
+            serviceCollection.AddSingleton<IAsioDriverDiscovery, AsioDriverDiscovery>();
+            serviceCollection.AddSingleton<IWasapiDeviceDiscovery, WasapiDeviceDiscovery>();
 
-            // 🧩 ViewModels (richtige Reihenfolge beachten)
-            // 🧩 ViewModel für UnitSetup
+            // ViewModels
             serviceCollection.AddSingleton<UnitSetupViewModel>();
-            // 🧩 ViewModel für SetupCaptureWindow
-            serviceCollection.AddTransient<SetupCaptureViewModel>();
-            // 🧩 ViewModel für PowerButton
+            serviceCollection.AddSingleton<UnitCaptureViewModel>();
             serviceCollection.AddSingleton<PowerButtonViewModel>();
-            // 🧩 ViewModel für Main
             serviceCollection.AddSingleton<MainViewModel>();
+            serviceCollection.AddTransient<SetupCaptureViewModel>();
 
-            // 🧩 Registrierung des Bootstrappers
+            // Bootstrapper
             serviceCollection.AddSingleton<ISystemBootstrapper, SystemBootstrapper>();
 
+            // Build Provider
             _serviceProvider = serviceCollection.BuildServiceProvider();
 
-            // 🚀 Schritt 2: Startroutine aufrufen (koordiniert Initialisierung)
+            // Starte Initialisierung
             _bootstrapper = _serviceProvider.GetRequiredService<ISystemBootstrapper>();
-            _bootstrapper.Run();
+            _bootstrapper.Run(); // aktuell leer
 
-            // 🧷 Schritt 3: MainWindow starten und mit ViewModel verbinden
+            // Hauptfenster öffnen
             var mainWindow = new MainWindow
             {
                 DataContext = _serviceProvider.GetRequiredService<MainViewModel>()

@@ -6,7 +6,6 @@
 
     <Application.Resources>
         <ResourceDictionary>
-            <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <!-- ✅ Richtig eingebunden -->
                 <!-- various Button -->

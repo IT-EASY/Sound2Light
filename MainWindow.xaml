@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:units="clr-namespace:Sound2Light.Views.Controls.Units"
         mc:Ignorable="d"
-        Title="Sound2Light" Height="800" Width="1200">
+        Title="Sound2Light" Height="800" Width="1020">
 
     <!-- 🎨 Hintergrundbild -->
     <Window.Background>
@@ -13,47 +13,71 @@
                     Stretch="UniformToFill" />
     </Window.Background>
 
-    <Grid x:Name="MainLayoutRoot" Margin="5">
-        <!-- Spaltenstruktur -->
+    <Grid x:Name="MainLayoutRoot" Margin="1">
+        <!-- 20 Spalten à 50 px -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
-
-        <!-- Zeilenstruktur -->
+        
+        <!-- 16 Zeilen à 50 px -->
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="130"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
+        <!-- UnitSetup in Zeile 0, Spalte 0 -->
+        <units:UnitSetup Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="10" DataContext="{Binding UnitSetup}"/>
 
-        <!-- UnitSetup in Zeile 0, Spalte 0 + 1 -->
-        <units:UnitSetup Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding UnitSetup}"/>
-        <!-- UnitStatus in Zeile 0, Spalte 3 + 4 -->
-        <units:UnitStatus Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" />
-        
-        <!-- UnitCapture in Zeile 1 Spalte 0 mit Span über alle verbleibenden Zeilen -->
-        <units:UnitCapture Grid.Row="1" Grid.Column="0" Grid.RowSpan="7" />
-        
-        <!-- UnitS2L  Zeile 1 + 2, Spalte 1 - 4 -->
-        <units:UnitS2L Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="2"/>
+        <!-- UnitStatus in Zeile 0, Spalte 1 -->
+        <units:UnitStatus Grid.Row="0"  Grid.Column="10" Grid.ColumnSpan="10" />
 
-        <!-- UnitStem Zeile 4 Spalte 1 -->
-        <units:UnitStem Grid.Row="4" Grid.Column="1" />
+        <!-- Unit Capture - Zeile 1 Spalte 0 -->
+        <units:UnitCapture Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" DataContext="{Binding UnitCapture}"/> 
         
-        <!-- UnitB2L Zeile 5 Spalte 1 -->
-        <units:UnitB2L Grid.Row="5" Grid.Column="1" />
-        <!-- UnitCueStep -->
-        <units:UnitCueStep Grid.Row="6" Grid.Column="1" />
-        <!-- UnitBpm -->
-        <units:UnitBpm Grid.Row="7" Grid.Column="1" />
+        <!--   Zeile 1 + 2, Spalte 1 - 4 -->
+        <units:UnitS2L Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
+        <!-- Zeile 4 Spalte 1 -->
+        <units:UnitStem2L Grid.Row="1" Grid.Column="4" Grid.RowSpan="2" />
+
+        <!-- Zeile 5 Spalte 1 -->
+        <units:UnitB2L Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1"/>
+        
+        <!-- Zeile 5 Spalte 2 -->
+        <units:UnitCueStep Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2"/>
+        <!-- Zeile 5 Spalte 4 -->
+        <units:UnitBpm Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" />
     </Grid>
 </Window>
