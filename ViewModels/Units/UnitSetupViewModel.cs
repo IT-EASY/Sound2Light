@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sound2Light.Config;
 using Sound2Light.Contracts.Services.Devices;
 using Sound2Light.Helpers.UI;
+using Sound2Light.ViewModels.Windows;
 using Sound2Light.Views.Windows;
 using Sound2Light.Services.Devices;
 
@@ -39,7 +40,7 @@ namespace Sound2Light.ViewModels.Units
             var appConfig = _services.GetRequiredService<IAppConfigurationService>();
             var window = new SetupCaptureWindow();
 
-            var asioEnum = _services.GetRequiredService<IAsioDriverEnumerator>();
+            var asioEnum = _services.GetRequiredService<IAsioDeviceEnumerator>();
             var wasapiDisc = _services.GetRequiredService<IWasapiDeviceDiscovery>();
 
             var viewModel = new SetupCaptureViewModel(appConfig, asioEnum, wasapiDisc, () => window.Close());

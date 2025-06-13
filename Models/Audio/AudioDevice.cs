@@ -1,23 +1,23 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Sound2Light.Models.Audio;
-
-public class AudioDevice
+namespace Sound2Light.Models.Audio
 {
-    public string Name { get; set; } = string.Empty;
-    public string? OriginalDisplayName { get; set; }
-    public AudioDeviceType Type { get; set; }
+    public class AudioDevice
+    {
+        public string Name { get; set; } = string.Empty;
 
-    public int SampleRate { get; set; }
-    public int BitDepth { get; set; }
-    public int ChannelCount { get; set; }
-    public int? BufferSize { get; set; } // optional: nur ASIO
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public AudioDeviceType Type { get; set; }
 
-    public string[]? InputChannelNames { get; set; }
+        public int SampleRate { get; set; }
+        public int BitDepth { get; set; }
+        public int ChannelCount { get; set; }
+        public int? BufferSize { get; set; } // optional: nur ASIO
 
-    [JsonIgnore]
-    public bool IsAvailable { get; set; } = true;
+        public string[]? InputChannelNames { get; set; }
+        public int? SampleType { get; set; } // Nur ASIO relevant
 
-    [JsonIgnore]
-    public string DisplayName => $"[{Type}] {Name}";
+        [JsonIgnore]
+        public string DisplayName => $"[{Type}] {Name}"; // Nur für DeviceList in der UI!
+    }
 }

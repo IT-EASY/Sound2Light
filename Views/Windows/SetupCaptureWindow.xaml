@@ -1,9 +1,14 @@
 ﻿<Window x:Class="Sound2Light.Views.Windows.SetupCaptureWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Setup Capture Device" Height="370" Width="600"
+        xmlns:conv="clr-namespace:Sound2Light.Helpers.Converters"
+        Title="Setup Capture Device" Height="430" Width="550"
         Background="CadetBlue"
         WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -13,12 +18,14 @@
             <RowDefinition Height="Auto" />
             <!-- Content -->
             <RowDefinition Height="Auto" />
+            <!-- Multipier, Preferred und current device -->
+            <RowDefinition Height="Auto" />
             <!-- Button -->
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <!-- Row 0 / Column 0 / 1 - Titel -->
@@ -31,7 +38,7 @@
                    Margin="0,0,0,5" />
 
         <!-- Column 0 / Row 1 - device list box -->
-        <TextBlock Text="available capture devices"
+        <TextBlock Text="Available Capture Devices"
                    FontWeight="Bold"
                    FontSize="12"
                    Grid.Row="1"
@@ -39,7 +46,7 @@
                    Margin="0,0,0,5" />
         
         <!-- Column 1: preferred value -->
-        <TextBlock Text="properties"
+        <TextBlock Text="Properties"
                    FontWeight="Bold"
                    FontSize="12"
                    Grid.Row="1"
@@ -61,7 +68,8 @@
                     Grid.Column="1" 
                     VerticalAlignment="Top" >
             
-            <TextBox Text="{Binding PreferredSampleRate, Mode=OneWay}" 
+            <!-- SampleRate -->
+            <TextBox Text="{Binding SelectedDevice.Device.SampleRate, Mode=OneWay}" 
                      IsReadOnly="True" 
                      Margin="0,0,0,2" 
                      FontSize="12" />
@@ -71,7 +79,8 @@
                        FontSize="11" 
                        Margin="0,0,0,5" />
 
-            <TextBox Text="{Binding PreferredBitDepth, Mode=OneWay}" 
+            <!-- BitDepth -->
+            <TextBox Text="{Binding SelectedDevice.Device.BitDepth, Mode=OneWay}" 
                      IsReadOnly="True" 
                      Margin="0,0,0,2" 
                      FontSize="12" />
@@ -81,7 +90,8 @@
                        FontSize="11" 
                        Margin="0,0,0,5" />
 
-            <TextBox Text="{Binding PreferredInputChannels, Mode=OneWay}" 
+            <!-- Channel Count -->
+            <TextBox Text="{Binding SelectedDevice.Device.ChannelCount, Mode=OneWay}" 
                      IsReadOnly="True" 
                      Margin="0,0,0,2" 
                      FontSize="12" />
@@ -91,60 +101,138 @@
                        FontSize="11" 
                        Margin="0,0,0,5" />
 
-            <TextBox Text="{Binding PreferredBufferSize, Mode=OneWay}" 
-                     IsReadOnly="True" 
+            <!-- SampleType (ASIO only) -->
+            <TextBox Text="{Binding SelectedDevice.SampleTypeDisplay, Mode=OneWay}" 
+                     IsReadOnly="True"
+                     IsEnabled="{Binding SelectedDevice.IsSampleTypeEnabled}"
                      Margin="0,0,0,2" 
                      FontSize="12" />
             
-            <TextBlock Text="Buffer Size (ASIO only)" 
+            <TextBlock Text="SampleType (ASIO only)" 
                        FontWeight="Bold" 
                        FontSize="11" 
                        Margin="0,0,0,5" />
 
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                <StackPanel Width="90" Margin="0,0,10,0">
-                    <ComboBox ItemsSource="{Binding FFTSizes}"
-                  SelectedItem="{Binding SelectedFFTSize, Mode=TwoWay}"
-                  FontSize="12" />
-                    <TextBlock Text="FFT Size"
-                   FontWeight="Bold"
-                   FontSize="11"
-                   Margin="0,0,0,5" />
-                </StackPanel>
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Buffer Size"
+                           HorizontalAlignment="Left"
+                           FontWeight="Bold"
+                           FontSize="12"
+                           Width="Auto"
+                           Margin="0,0,0,5" />
+                <!-- ASIO Buffer Size -->
+                <TextBox Grid.Row="1" Grid.Column="0" 
+                         Text="{Binding SelectedDevice.BufferSizeDisplay, Mode=OneWay}"
+                         IsReadOnly="True"
+                         Visibility="{Binding SelectedDevice.IsAsio, Converter={StaticResource BoolToVisibilityConverter}}"
+                         HorizontalAlignment="Left"
+                         Width="50"
+                         Height="22"
+                         Margin="0"
+                         FontSize="12" />
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           Visibility="{Binding SelectedDevice.IsAsio, Converter={StaticResource BoolToVisibilityConverter}}"
+                           Text="ASIO"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Left"
+                           FontSize="11"
+                           Margin="0,3,0,5" />
+                
+                <!-- WASAPI Buffer Size -->
+                <ComboBox Grid.Row="1" Grid.Column="0"
+                          ItemsSource="{Binding WasapiBufferSizes}"
+                          SelectedItem="{Binding SelectedWasapiBufferSize, Mode=TwoWay}"
+                          Visibility="{Binding SelectedDevice.IsWasapi, Converter={StaticResource BoolToVisibilityConverter}}"
+                          HorizontalAlignment="Left"
+                          Width="50"
+                          Height="22"
+                          FontSize="12"
+                          Margin="0" />
 
-                <StackPanel Width="90">
-                    <ComboBox ItemsSource="{Binding BufferMultipliers}"
-                  SelectedItem="{Binding SelectedBufferMultiplier, Mode=TwoWay}"
-                  FontSize="12" />
-                    <TextBlock Text="Buffer Multiplier"
-                   FontWeight="Bold"
-                   FontSize="11"
-                   Margin="0,0,0,5" />
-                </StackPanel>
-            </StackPanel>
+                <TextBlock Grid.Row="2" Grid.Column="1"
+                           Visibility="{Binding SelectedDevice.IsWasapi, Converter={StaticResource BoolToVisibilityConverter}}"
+                           Text="WASAPI"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Left"
+                           FontSize="11"
+                           Margin="0,3,0,5" />
+                
+
+            </Grid>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                    Margin="0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Textbox preferred device -->
+                <TextBox Grid.Row="0" Grid.Column="0"
+                         VerticalAlignment="Center"
+                         Text="{Binding PreferredDeviceDisplay, Mode=OneWay}" 
+                         
+                         Margin="0,0,5,0" />
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Text="Preferred Device"
+                           FontSize="11"
+                           FontWeight="Bold" />
+                <Button Grid.Row="0" Grid.Column="2"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"
+                        Content="Set"
+                        Width="60"
+                        Command="{Binding SavePreferredDeviceCommand}" />
+
+                <!-- Textbox Current device -->
+                <TextBox Grid.Row="1" Grid.Column="0"
+                         VerticalAlignment="Center"
+                         Text="{Binding CurrentDeviceDisplay, Mode=OneWay}"
+                         IsReadOnly="True"
+                         Margin="0,10,5,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Text="Current Device"
+                           FontSize="11"
+                           FontWeight="Bold"
+                           Margin="0,7,0,0"/>
+                <Button Grid.Row="1" Grid.Column="2"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"
+                        Content="Set"
+                        Width="60"
+                        Command="{Binding SaveCurrentDeviceCommand}" 
+                        Margin="0,10,0,0"/>
+            </Grid>
         </StackPanel>
 
-        <StackPanel Grid.Row="3"
+        <StackPanel Grid.Row="4"
                     Grid.Column="0" 
                     Grid.ColumnSpan="2"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right"
-                    Margin="0,20,0,0" >
-
-            <Button Content="Set as Preferred"
-                    Width="120"
-                    Command="{Binding SaveAndCloseCommand}"
-                    Margin="0,0,8,0" />
-
-            <Button Content="Use Temporarily"
-                    Width="120"
-                    Command="{Binding SaveSessionOnlyCommand}"
-                    Margin="0,0,8,0" />
-
-            <Button Content="Cancel"
-                    Width="90"
-                    Command="{Binding CancelCommand}" 
-                    Margin="0,0,8,0" />
+                    Margin="0,10,0,0" >
+            <Button Content="Close"
+                    HorizontalAlignment="Right"
+                    Width="60"
+                    Command="{Binding CloseCommand}" />
         </StackPanel>
     </Grid>
 </Window>

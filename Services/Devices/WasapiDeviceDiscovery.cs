@@ -48,8 +48,7 @@ public class WasapiDeviceDiscovery : IWasapiDeviceDiscovery
                     Type = AudioDeviceType.Wasapi,
                     SampleRate = sampleRate,
                     BitDepth = bitDepth,
-                    ChannelCount = channelCount,
-                    IsAvailable = true
+                    ChannelCount = channelCount
                 };
 
                 Debug.WriteLine($"[WASAPI] {audioDevice.DisplayName} → {channelCount} Ch, {sampleRate} Hz, {bitDepth} Bit");

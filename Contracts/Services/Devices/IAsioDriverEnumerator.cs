@@ -4,7 +4,7 @@ using Sound2Light.Models.Audio;
 
 namespace Sound2Light.Contracts.Services.Devices
 {
-    public interface IAsioDriverEnumerator
+    public interface IAsioDeviceEnumerator
     {
         List<AudioDevice> GetAvailableAsioDevices();
     }

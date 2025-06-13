@@ -9,6 +9,6 @@ public class RingBufferSettings
     /// <summary>
     /// Multiplikator auf Gerätebuffergröße (z. B. 1.5 → 150 %).
     /// </summary>
-    public double LatencyMultiplier { get; set; } = 2.0;
+    public int LatencyMultiplier { get; set; } = 2;
 
 }

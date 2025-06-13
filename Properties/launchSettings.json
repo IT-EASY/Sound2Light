@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Sound2Light": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

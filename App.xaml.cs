@@ -2,6 +2,7 @@
 using Sound2Light.Startup;
 using Sound2Light.ViewModels.Main;
 using Sound2Light.ViewModels.Units;
+using Sound2Light.ViewModels.Windows;
 using Sound2Light.Services.UI;
 using Sound2Light.Services.System;
 using Sound2Light.Config;
@@ -45,10 +46,12 @@ namespace Sound2Light
             serviceCollection.AddSingleton<IApplicationShutdownService, ApplicationShutdownService>();
             serviceCollection.AddSingleton<IPowerButtonStateService, PowerButtonStateService>();
 
-            // Systemdienste
-            serviceCollection.AddSingleton<IAsioDetectionService, AsioDetectionService>();
-            serviceCollection.AddSingleton<IAsioDriverDiscovery, AsioDriverDiscovery>();
+            // Device Services
             serviceCollection.AddSingleton<IWasapiDeviceDiscovery, WasapiDeviceDiscovery>();
+            serviceCollection.AddSingleton<IAsioDeviceEnumerator, AsioDeviceEnumerator>();
+            // AsioBridge (C++/CLI) Capture Service
+            serviceCollection.AddSingleton<AsioBridgeCLI.AsioCaptureService>();
+
 
             // ViewModels
             serviceCollection.AddSingleton<UnitSetupViewModel>();
@@ -67,12 +70,8 @@ namespace Sound2Light
             _bootstrapper = _serviceProvider.GetRequiredService<ISystemBootstrapper>();
             _bootstrapper.Run(); // aktuell leer
 
-            // Hauptfenster öffnen
-            var mainWindow = new MainWindow
-            {
-                DataContext = _serviceProvider.GetRequiredService<MainViewModel>()
-            };
-            mainWindow.Show();
+
+
         }
     }
 }

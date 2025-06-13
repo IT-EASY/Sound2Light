@@ -1,104 +1,155 @@
 ﻿using Sound2Light.Config;
-using Sound2Light.Models.Audio;
 using Sound2Light.Contracts.Services.Devices;
 using Sound2Light.Helpers.UI;
+using Sound2Light.Helpers.Audio;
+using Sound2Light.Models.Audio;
 using Sound2Light.Services.Devices;
+
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-public class SetupCaptureViewModel : INotifyPropertyChanged
+namespace Sound2Light.ViewModels.Windows
 {
-    private readonly IAppConfigurationService _config;
-    private readonly IAsioDriverEnumerator _asioEnumerator;
-    private readonly IWasapiDeviceDiscovery _wasapiDiscovery;
-    private readonly Action _closeCallback;
-
-    public ObservableCollection<DisplayDevice> AvailableDevices { get; } = new();
-
-    private DisplayDevice? _selectedDevice;
-    public DisplayDevice? SelectedDevice
+    public class SetupCaptureViewModel : INotifyPropertyChanged
     {
-        get => _selectedDevice;
-        set
+        private readonly IAppConfigurationService _config;
+        private readonly IAsioDeviceEnumerator _asioEnumerator;
+        private readonly IWasapiDeviceDiscovery _wasapiDiscovery;
+        private readonly Action _closeCallback;
+
+        public ObservableCollection<DisplayDevice> AvailableDevices { get; } = new();
+
+        private DisplayDevice? _selectedDevice;
+        public DisplayDevice? SelectedDevice
         {
-            if (_selectedDevice != value)
+            get => _selectedDevice;
+            set
             {
-                _selectedDevice = value;
-                OnPropertyChanged();
+                if (_selectedDevice != value)
+                {
+                    _selectedDevice = value;
+                    OnPropertyChanged();
+                }
             }
         }
+
+
+        // BufferSize für WASAPI (wenn relevant)
+        public int[] WasapiBufferSizes { get; } = new[] { 192, 256, 384, 512, 1024, 2048 };
+        private const int DefaultWasapiBufferSize = 512;
+        private int _selectedWasapiBufferSize = DefaultWasapiBufferSize;
+        public int SelectedWasapiBufferSize
+        {
+            get => _selectedWasapiBufferSize;
+            set
+            {
+                if (_selectedWasapiBufferSize != value)
+                {
+                    _selectedWasapiBufferSize = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        // Anzeige für Preferred Device
+        public string PreferredDeviceDisplay =>
+            _config.Settings.PreferredCaptureDevice?.Name ?? "-";
+        // Anzeige für Current Device
+        public string CurrentDeviceDisplay =>
+            _config.Settings.CurrentDevice != null
+            ? _config.Settings.CurrentDevice.Name
+            : "-";
+
+        // Command für Button "Set Preferred"
+        public ICommand SavePreferredDeviceCommand { get; }
+        // Command für "Set Current"
+        public ICommand SaveCurrentDeviceCommand { get; }
+        // Command für "Close"
+        public ICommand CloseCommand { get; }
+
+        public SetupCaptureViewModel(
+            IAppConfigurationService config,
+            IAsioDeviceEnumerator asioEnumerator,
+            IWasapiDeviceDiscovery wasapiDiscovery,
+            Action closeCallback)
+        {
+            _config = config;
+            _asioEnumerator = asioEnumerator;
+            _wasapiDiscovery = wasapiDiscovery;
+            _closeCallback = closeCallback;
+
+            SavePreferredDeviceCommand = new RelayCommand(_ => SavePreferredDevice());
+            SaveCurrentDeviceCommand = new RelayCommand(_ => SaveCurrentDevice());
+            CloseCommand = new RelayCommand(_ => _closeCallback?.Invoke());
+
+            LoadDevices();
+        }
+
+        private void LoadDevices()
+        {
+            AvailableDevices.Clear();
+
+            var asio = _asioEnumerator.GetAvailableAsioDevices();
+            var wasapi = _wasapiDiscovery.GetWasapiDevices();
+
+            foreach (var device in asio)
+                AvailableDevices.Add(new DisplayDevice(device, "[ASIO]"));
+            foreach (var device in wasapi)
+                AvailableDevices.Add(new DisplayDevice(device, "[WASAPI]"));
+
+            // Preferred vorauswählen (wenn vorhanden)
+            var preferred = _config.Settings.PreferredCaptureDevice;
+            SelectedDevice = preferred != null
+                ? AvailableDevices.FirstOrDefault(d => d.Device.Name == preferred.Name && d.Device.Type == preferred.Type)
+                : AvailableDevices.FirstOrDefault();
+        }
+
+        // "Set Preferred Device" – Device speichern und Property aktualisieren
+        private void SavePreferredDevice()
+        {
+            if (SelectedDevice?.Device != null)
+            {
+                _config.Settings.PreferredCaptureDevice = SelectedDevice.Device;
+                _config.SaveConfiguration();
+                OnPropertyChanged(nameof(PreferredDeviceDisplay));
+            }
+        }
+        // "Set Current Device" – nur für die Laufzeit
+        private void SaveCurrentDevice()
+        {
+            if (SelectedDevice?.Device != null)
+            {
+                _config.Settings.CurrentDevice = SelectedDevice.Device;
+                OnPropertyChanged(nameof(CurrentDeviceDisplay));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public string DummyDeviceName => "[Kein Gerät verfügbar – Setup vorbereitet]";
-
-    public int SelectedFFTSize { get; set; } = 1024;
-    public int SelectedBufferMultiplier { get; set; } = 2;
-
-    public ICommand ApplyTemporaryCommand { get; }
-    public ICommand SaveAndCloseCommand { get; }
-
-    public SetupCaptureViewModel(
-        IAppConfigurationService config,
-        IAsioDriverEnumerator asioEnumerator,
-        IWasapiDeviceDiscovery wasapiDiscovery,
-        Action closeCallback)
+    public class DisplayDevice
     {
-        _config = config;
-        _asioEnumerator = asioEnumerator;
-        _wasapiDiscovery = wasapiDiscovery;
-        _closeCallback = closeCallback;
+        public string DisplayName { get; }
+        public AudioDevice Device { get; }
 
-        ApplyTemporaryCommand = new RelayCommand(_ => ApplyTemporaryDevice());
-        SaveAndCloseCommand = new RelayCommand(_ => SaveAndClose());
+        public DisplayDevice(AudioDevice device, string prefix)
+        {
+            Device = device;
+            DisplayName = $"{prefix} {device.Name}";
+        }
 
-        LoadDevices();
-    }
+        public bool IsAsio => Device.Type == AudioDeviceType.Asio;
+        public bool IsWasapi => Device.Type == AudioDeviceType.Wasapi;
 
-    private void LoadDevices()
-    {
-        AvailableDevices.Clear();
+        public string BufferSizeDisplay => Device.BufferSize?.ToString() ?? "-";
 
-        var asio = _asioEnumerator.GetAvailableAsioDevices();
-        var wasapi = _wasapiDiscovery.GetWasapiDevices();
-
-        foreach (var device in asio)
-            AvailableDevices.Add(new DisplayDevice(device, "[ASIO]"));
-
-        foreach (var device in wasapi)
-            AvailableDevices.Add(new DisplayDevice(device, "[WASAPI]"));
-
-        SelectedDevice = AvailableDevices.FirstOrDefault();
-    }
-
-    private void ApplyTemporaryDevice()
-    {
-        // später: temporär aktivieren
-    }
-
-    private void SaveAndClose()
-    {
-        ApplyTemporaryDevice();
-        _closeCallback.Invoke();
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-}
-
-public class DisplayDevice
-{
-    public string DisplayName { get; }
-    public AudioDevice Device { get; }
-
-    public DisplayDevice(AudioDevice device, string prefix)
-    {
-        Device = device;
-        DisplayName = $"{prefix} {device.Name}";
+        public string SampleTypeDisplay => AsioSampleTypeHelper.GetDescription(Device.SampleType);
+        public bool IsSampleTypeEnabled => IsAsio && Device.SampleType.HasValue;
     }
 }

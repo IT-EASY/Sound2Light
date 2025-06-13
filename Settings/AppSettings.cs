@@ -8,10 +8,6 @@ namespace Sound2Light.Settings;
 public class AppSettings
 {
     /// <summary>
-    /// Prüfung, ob ASIO-Treiber isntalliert sind.
-    public bool AsioAvailable { get; set; } = false;
-
-    /// <summary>
     /// Bevorzugtes Aufnahmegerät (wird gespeichert).
     /// </summary>
     public AudioDevice? PreferredCaptureDevice { get; set; }
