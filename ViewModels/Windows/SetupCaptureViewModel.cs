@@ -86,20 +86,25 @@ namespace Sound2Light.ViewModels.Windows
             SaveCurrentDeviceCommand = new RelayCommand(_ => SaveCurrentDevice());
             CloseCommand = new RelayCommand(_ => _closeCallback?.Invoke());
 
-            LoadDevices();
+            FillDeviceListBox();
         }
 
-        private void LoadDevices()
+        private void FillDeviceListBox()
         {
             AvailableDevices.Clear();
 
-            var asio = _asioEnumerator.GetAvailableAsioDevices();
-            var wasapi = _wasapiDiscovery.GetWasapiDevices();
 
-            foreach (var device in asio)
-                AvailableDevices.Add(new DisplayDevice(device, "[ASIO]"));
-            foreach (var device in wasapi)
-                AvailableDevices.Add(new DisplayDevice(device, "[WASAPI]"));
+            var sortedDevices = _config.Settings.AvailableDevices
+                .Where(d => d.Type == AudioDeviceType.Asio || d.Type == AudioDeviceType.Wasapi)
+                .OrderBy(d => d.Type) // ASIO vor WASAPI (enum order)
+                .ThenBy(d => d.Name)  // Innerhalb nach Name
+                .ToList();
+
+            foreach (var device in sortedDevices)
+            {
+                var prefix = device.Type == AudioDeviceType.Asio ? "[ASIO]" : "[WASAPI]";
+                AvailableDevices.Add(new DisplayDevice(device, prefix));
+            }
 
             // Preferred vorauswählen (wenn vorhanden)
             var preferred = _config.Settings.PreferredCaptureDevice;
@@ -125,6 +130,11 @@ namespace Sound2Light.ViewModels.Windows
             {
                 _config.Settings.CurrentDevice = SelectedDevice.Device;
                 OnPropertyChanged(nameof(CurrentDeviceDisplay));
+                System.Windows.MessageBox.Show(
+                    "Das Eingabegerät wurde geändert. Bitte starten Sie die Anwendung neu, damit die Änderung wirksam wird.",
+                    "Neustart erforderlich",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
             }
         }
 

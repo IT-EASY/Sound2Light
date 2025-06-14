@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Windows;
 
 using Sound2Light.Config;
+
+using System.Diagnostics;
+using System.Windows;
 
 namespace Sound2Light.Views.Windows
 {
@@ -10,6 +12,7 @@ namespace Sound2Light.Views.Windows
         public SetupCaptureWindow()
         {
             InitializeComponent();
+            Debug.WriteLine("[DEBUG] SetupCaptureWindow wurde geöffnet!");
         }
     }
 }

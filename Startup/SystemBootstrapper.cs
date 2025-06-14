@@ -3,6 +3,7 @@
 using Sound2Light.Config;
 using Sound2Light.Contracts.Services.Devices;
 using Sound2Light.Models.Audio;
+using Sound2Light.Services.Audio;
 using Sound2Light.Services.Devices;
 using Sound2Light.ViewModels.Main;
 using Sound2Light.ViewModels.Windows;
@@ -59,7 +60,6 @@ namespace Sound2Light.Startup
 
             _configService.Settings.CurrentDevice = current;
 
-
             // Hauptfenster öffnen (IMMER!)
             var mainWindow = new MainWindow
             {
@@ -76,6 +76,26 @@ namespace Sound2Light.Startup
                 Debug.WriteLine($"[ASIO] CaptureService gestartet: {started}");
             }
 
+            if (current != null && current.Type == AudioDeviceType.Wasapi)
+            {
+                // Echte Gerätebuffergröße pro Block (Frames)
+                var deviceBufferSize = current.BufferSize ?? 512;
+
+                // *** Hol DIR IMMER DIE DI-Instanz, NIE new! ***
+                var ringBuffer = _services.GetRequiredService<WasapiRingBuffer>();
+
+                // Service bekommt die Device-Buffergröße (Frames), nicht RingBufferSize!
+                var wasapiService = new WasapiCaptureService(current, deviceBufferSize);
+
+                wasapiService.SamplesAvailable += buffer =>
+                {
+                    int frames = buffer.Length / 2; // Stereo: 2 Samples pro Frame
+                    ringBuffer.Write(buffer, 0, frames);
+                };
+
+                wasapiService.Start();
+                Debug.WriteLine($"[WASAPI] CaptureService gestartet für: {current.Name}, DeviceBufferSize: {deviceBufferSize}, RingBufferSize: {ringBuffer.Capacity}, Multiplier: {_configService.Settings.RingBufferSettings.LatencyMultiplier}");
+            }
 
             // Hinweis anzeigen, wenn KEIN gültiges Device da ist (aber App weiter starten!)
             if (current == null)
@@ -86,7 +106,6 @@ namespace Sound2Light.Startup
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Warning);
             }
-
         }
     }
 }

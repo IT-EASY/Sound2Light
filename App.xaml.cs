@@ -1,15 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+
+using Sound2Light.Config;
+using Sound2Light.Contracts.Services.Audio;
+using Sound2Light.Contracts.Services.Devices;
+using Sound2Light.Services.Audio;
+using Sound2Light.Services.Devices;
+using Sound2Light.Services.System;
+using Sound2Light.Services.UI;
 using Sound2Light.Startup;
 using Sound2Light.ViewModels.Main;
 using Sound2Light.ViewModels.Units;
 using Sound2Light.ViewModels.Windows;
-using Sound2Light.Services.UI;
-using Sound2Light.Services.System;
-using Sound2Light.Config;
+
 using System.IO;
 using System.Windows;
-using Sound2Light.Services.Devices;
-using Sound2Light.Contracts.Services.Devices;
 
 namespace Sound2Light
 {
@@ -51,7 +55,20 @@ namespace Sound2Light
             serviceCollection.AddSingleton<IAsioDeviceEnumerator, AsioDeviceEnumerator>();
             // AsioBridge (C++/CLI) Capture Service
             serviceCollection.AddSingleton<AsioBridgeCLI.AsioCaptureService>();
+            // Wasapi Capture Service
+            serviceCollection.AddSingleton<WasapiCaptureService>();
 
+            // WasapiRingBuffer – jetzt korrekt per Factory, damit RingBufferSize gesetzt wird!
+            serviceCollection.AddSingleton<WasapiRingBuffer>(provider =>
+            {
+                var config = provider.GetRequiredService<IAppConfigurationService>();
+                var ringBufferSize = config.Settings.RingBufferSettings.RingBufferSize;
+                return new WasapiRingBuffer(ringBufferSize); // ***KEIN Multiplizieren mit 2!***
+            });
+
+            // Interface-Registration bleibt gleich
+            serviceCollection.AddSingleton<IAudioAnalysisBuffer>(provider => provider.GetRequiredService<WasapiRingBuffer>());
+            serviceCollection.AddSingleton<AudioBufferProvider>();
 
             // ViewModels
             serviceCollection.AddSingleton<UnitSetupViewModel>();
@@ -69,9 +86,6 @@ namespace Sound2Light
             // Starte Initialisierung
             _bootstrapper = _serviceProvider.GetRequiredService<ISystemBootstrapper>();
             _bootstrapper.Run(); // aktuell leer
-
-
-
         }
     }
 }

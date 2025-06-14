@@ -67,17 +67,18 @@
         <units:UnitCapture Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="10" DataContext="{Binding UnitCapture}"/> 
         
         <!--   Zeile 1 + 2, Spalte 1 - 4 -->
-        <units:UnitS2L Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <!-- <units:UnitS2L Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
-        <!-- Zeile 4 Spalte 1 -->
+        Zeile 4 Spalte 1
         <units:UnitStem2L Grid.Row="1" Grid.Column="4" Grid.RowSpan="2" />
 
-        <!-- Zeile 5 Spalte 1 -->
+        Zeile 5 Spalte 1
         <units:UnitB2L Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1"/>
         
-        <!-- Zeile 5 Spalte 2 -->
+        Zeile 5 Spalte 2
         <units:UnitCueStep Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2"/>
-        <!-- Zeile 5 Spalte 4 -->
-        <units:UnitBpm Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" />
+        
+        Zeile 5 Spalte 4
+        <units:UnitBpm Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" /> -->
     </Grid>
 </Window>

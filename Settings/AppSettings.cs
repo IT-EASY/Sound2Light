@@ -12,10 +12,6 @@ public class AppSettings
     /// </summary>
     public AudioDevice? PreferredCaptureDevice { get; set; }
 
-    /// <summary>
-    /// Aktuell verwendetes Gerät zur Laufzeit.
-    /// </summary>
-    [JsonIgnore]
     public AudioDevice? CurrentDevice { get; set; }
 
     /// <summary>
