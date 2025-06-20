@@ -1,22 +1,26 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AsioBridgeCLI;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 
 using Sound2Light.Services.Audio;
 
 using System;
+using System.Diagnostics;
 using System.Windows.Threading;
 
 namespace Sound2Light.ViewModels.Units
 {
     public class UnitCaptureViewModel : ObservableObject
     {
-        private readonly AudioBufferProvider _bufferProvider;
+        private readonly AsioCaptureService _asioService;
         private readonly DispatcherTimer _timer;
 
         // Konfiguration
         private const int LedCount = 48;
-        private const int FramesPerUpdate = 512;         // Anzeige-Auflösung (je kleiner, desto dynamischer)
-        private const int PeakHoldMilliseconds = 200;    // Wie lange bleibt Peak fix?
-        private const int PeakDecayMilliseconds = 80;    // Wie schnell fällt Peak nach Hold? (kleiner = schneller)
+        private const int FramesPerUpdate = 512;
+        private const int PeakHoldMilliseconds = 200;
+        private const int PeakDecayMilliseconds = 80;
+        private const int SampleRate = 48000;
 
         // Anzeige-Properties
         public int LeftActiveLed { get; private set; }
@@ -30,22 +34,33 @@ namespace Sound2Light.ViewModels.Units
         private bool _leftDecayActive = false;
         private bool _rightDecayActive = false;
 
-        public UnitCaptureViewModel(AudioBufferProvider bufferProvider)
+        public UnitCaptureViewModel(AsioCaptureService asioService)
         {
-            _bufferProvider = bufferProvider;
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(33) };
+            _asioService = asioService;
+            // 20 Hz entspricht 50ms, optimal für VU-Meter
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(FramesPerUpdate * 1000.0 / SampleRate) };
             _timer.Tick += (s, e) => UpdateLevels();
             _timer.Start();
         }
 
         private void UpdateLevels()
         {
-            var buffer = _bufferProvider.GetActiveBuffer();
-
             float[] left = new float[FramesPerUpdate];
             float[] right = new float[FramesPerUpdate];
 
-            bool gotSamples = buffer.TryGetLatestFrames(left, right, FramesPerUpdate);
+            bool gotSamples = false;
+
+            if (_asioService.HasNewSamplesFor("VuMeter", FramesPerUpdate))
+            {
+                var handleLeft = System.Runtime.InteropServices.GCHandle.Alloc(left, System.Runtime.InteropServices.GCHandleType.Pinned);
+                var handleRight = System.Runtime.InteropServices.GCHandle.Alloc(right, System.Runtime.InteropServices.GCHandleType.Pinned);
+
+                _asioService.CopySamplesTo("VuMeter", handleLeft.AddrOfPinnedObject(), handleRight.AddrOfPinnedObject(), FramesPerUpdate);
+                gotSamples = true;
+
+                handleLeft.Free();
+                handleRight.Free();
+            }
 
             if (gotSamples)
             {
@@ -61,7 +76,6 @@ namespace Sound2Light.ViewModels.Units
                 int ledL = MapDbToLedIndex(dbL);
                 int ledR = MapDbToLedIndex(dbR);
 
-                // Pegelanzeige setzen
                 LeftActiveLed = ledL;
                 RightActiveLed = ledR;
 
@@ -74,7 +88,6 @@ namespace Sound2Light.ViewModels.Units
                 }
                 else if (ledL == LeftPeakLed)
                 {
-                    // Peak ist stabil, Timer zurücksetzen (wenn wieder gleich hoch)
                     _leftPeakSetTime = DateTime.UtcNow;
                     _leftDecayActive = false;
                 }
@@ -88,9 +101,8 @@ namespace Sound2Light.ViewModels.Units
                     }
                     if (_leftDecayActive && (now - _leftPeakSetTime).TotalMilliseconds > PeakDecayMilliseconds)
                     {
-                        // Fällt um 1 LED pro Tick, aber nie unter den aktuellen Pegel
                         LeftPeakLed = Math.Max(LeftPeakLed - 1, ledL);
-                        _leftPeakSetTime = now; // Decay-Takt neu starten
+                        _leftPeakSetTime = now;
                         if (LeftPeakLed == ledL)
                             _leftDecayActive = false;
                     }
@@ -125,15 +137,7 @@ namespace Sound2Light.ViewModels.Units
                     }
                 }
             }
-            else
-            {
-                LeftActiveLed = 0;
-                RightActiveLed = 0;
-                LeftPeakLed = 0;
-                RightPeakLed = 0;
-                _leftDecayActive = false;
-                _rightDecayActive = false;
-            }
+            // Bei fehlenden Daten (gotSamples == false) keine Änderung der Anzeige!
 
             OnPropertyChanged(nameof(LeftActiveLed));
             OnPropertyChanged(nameof(RightActiveLed));

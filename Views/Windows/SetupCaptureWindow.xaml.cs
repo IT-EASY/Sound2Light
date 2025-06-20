@@ -12,7 +12,6 @@ namespace Sound2Light.Views.Windows
         public SetupCaptureWindow()
         {
             InitializeComponent();
-            Debug.WriteLine("[DEBUG] SetupCaptureWindow wurde geöffnet!");
         }
     }
 }

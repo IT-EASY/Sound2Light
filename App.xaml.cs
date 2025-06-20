@@ -66,9 +66,10 @@ namespace Sound2Light
                 return new WasapiRingBuffer(ringBufferSize); // ***KEIN Multiplizieren mit 2!***
             });
 
-            // Interface-Registration bleibt gleich
-            serviceCollection.AddSingleton<IAudioAnalysisBuffer>(provider => provider.GetRequiredService<WasapiRingBuffer>());
-            serviceCollection.AddSingleton<AudioBufferProvider>();
+            // ASIO-Buffer-Registrierung
+
+            // AudioBufferProvider bekommt beide Buffer explizit
+
 
             // ViewModels
             serviceCollection.AddSingleton<UnitSetupViewModel>();
@@ -85,7 +86,7 @@ namespace Sound2Light
 
             // Starte Initialisierung
             _bootstrapper = _serviceProvider.GetRequiredService<ISystemBootstrapper>();
-            _bootstrapper.Run(); // aktuell leer
+            _bootstrapper.Run();
         }
     }
 }

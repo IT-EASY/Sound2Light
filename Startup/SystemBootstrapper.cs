@@ -9,6 +9,7 @@ using Sound2Light.ViewModels.Main;
 using Sound2Light.ViewModels.Windows;
 
 using System.Diagnostics;
+using System.Linq;
 
 namespace Sound2Light.Startup
 {
@@ -74,14 +75,20 @@ namespace Sound2Light.Startup
 
                 bool started = asioService.Start(current.Name, bufferMultiplier);
                 Debug.WriteLine($"[ASIO] CaptureService gestartet: {started}");
+
+                if (started)
+                {
+                    asioService.RegisterConsumer("VuMeter");
+                    Debug.WriteLine("[ASIO] VuMeter-Consumer erfolgreich registriert.");
+                }
             }
 
             if (current != null && current.Type == AudioDeviceType.Wasapi)
             {
-                // Echte Gerätebuffergröße pro Block (Frames)
+                // Gerätespezifische Buffergröße pro Block (Frames)
                 var deviceBufferSize = current.BufferSize ?? 512;
 
-                // *** Hol DIR IMMER DIE DI-Instanz, NIE new! ***
+                // IMMER die DI-Instanz verwenden!
                 var ringBuffer = _services.GetRequiredService<WasapiRingBuffer>();
 
                 // Service bekommt die Device-Buffergröße (Frames), nicht RingBufferSize!
