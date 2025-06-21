@@ -6,6 +6,7 @@ using Sound2Light.Models.Audio;
 using Sound2Light.Services.Audio;
 using Sound2Light.Services.Devices;
 using Sound2Light.ViewModels.Main;
+using Sound2Light.ViewModels.Units;
 using Sound2Light.ViewModels.Windows;
 
 using System.Diagnostics;
@@ -78,30 +79,34 @@ namespace Sound2Light.Startup
 
                 if (started)
                 {
-                    asioService.RegisterConsumer("VuMeter");
-                    Debug.WriteLine("[ASIO] VuMeter-Consumer erfolgreich registriert.");
+                    asioService.RegisterConsumer("AsioVuMeter");
+                    Debug.WriteLine("[ASIO] VuMeter-Consumer AsioVUMeter erfolgreich registriert.");
                 }
+
+                var captureViewModel = _services.GetRequiredService<UnitCaptureViewModel>();
+                captureViewModel.SetCaptureSource(current.Type);
             }
 
             if (current != null && current.Type == AudioDeviceType.Wasapi)
             {
-                // Gerätespezifische Buffergröße pro Block (Frames)
                 var deviceBufferSize = current.BufferSize ?? 512;
-
-                // IMMER die DI-Instanz verwenden!
                 var ringBuffer = _services.GetRequiredService<WasapiRingBuffer>();
+                ringBuffer.RegisterConsumer("WasapiVuMeter");
 
-                // Service bekommt die Device-Buffergröße (Frames), nicht RingBufferSize!
-                var wasapiService = new WasapiCaptureService(current, deviceBufferSize);
-
+                var wasapiService = _services.GetRequiredService<WasapiCaptureService>();
                 wasapiService.SamplesAvailable += buffer =>
                 {
-                    int frames = buffer.Length / 2; // Stereo: 2 Samples pro Frame
+                    //Debug.WriteLine($"[SystemBootstrapper] SamplesAvailable-Ereignis! {buffer.Length} samples");
+                    int frames = buffer.Length / 2;
                     ringBuffer.Write(buffer, 0, frames);
                 };
-
                 wasapiService.Start();
-                Debug.WriteLine($"[WASAPI] CaptureService gestartet für: {current.Name}, DeviceBufferSize: {deviceBufferSize}, RingBufferSize: {ringBuffer.Capacity}, Multiplier: {_configService.Settings.RingBufferSettings.LatencyMultiplier}");
+
+                Debug.WriteLine($"[WASAPI] VuMeter-Consumer WasapiVuMeter erfolgreich registriert.");
+
+                // Das fehlte bisher!
+                var captureViewModel = _services.GetRequiredService<UnitCaptureViewModel>();
+                captureViewModel.SetCaptureSource(current.Type);
             }
 
             // Hinweis anzeigen, wenn KEIN gültiges Device da ist (aber App weiter starten!)

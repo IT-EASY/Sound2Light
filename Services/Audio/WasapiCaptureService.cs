@@ -3,6 +3,7 @@ using CSCore.CoreAudioAPI;
 using CSCore.SoundIn;
 using CSCore.Streams;
 
+using Sound2Light.Contracts.Audio;
 using Sound2Light.Models.Audio;
 
 using System;
@@ -16,15 +17,16 @@ namespace Sound2Light.Services.Audio
         private IWaveSource? _waveSource;
         private readonly AudioDevice _device;
         private readonly int _bufferSize;
+        private readonly IWasapiRingBuffer _ringBuffer;
         private bool _isRunning;
 
-        // Callback/Event für Buffer-Daten (hier: float[] interleaved, length = frameCount*2)
         public event Action<float[]>? SamplesAvailable;
 
-        public WasapiCaptureService(AudioDevice device, int bufferSize)
+        public WasapiCaptureService(AudioDevice device, int bufferSize, IWasapiRingBuffer ringBuffer)
         {
             _device = device;
             _bufferSize = bufferSize;
+            _ringBuffer = ringBuffer;
         }
 
         public void Start()
@@ -32,7 +34,6 @@ namespace Sound2Light.Services.Audio
             if (_isRunning)
                 return;
 
-            // Suche das Device anhand des Namens (der vom System gelieferten FriendlyName)
             MMDevice? mmDevice = null;
             using (var enumerator = new MMDeviceEnumerator())
             {
@@ -50,40 +51,27 @@ namespace Sound2Light.Services.Audio
             if (mmDevice == null)
                 throw new InvalidOperationException("Device nicht gefunden: " + _device.Name);
 
-            // CSCore-WASAPI-Capture initialisieren
             _capture = new WasapiCapture
             {
                 Device = mmDevice,
-                // Optional: BufferSize anpassen (in Bytes)
-                // BufferSize = _bufferSize, // meist nicht kritisch, CSCore macht das automatisch
             };
 
             _capture.Initialize();
 
-            // Format prüfen und ggf. konvertieren auf 32-bit-float stereo
             var source = new SoundInSource(_capture)
                 .ToSampleSource()
-                .ToStereo(); // falls Mono → Stereo
+                .ToStereo();
 
-            // .ToSampleSource() gibt 32bit-float interleaved aus
-
-            // WaveSource für die Eventverarbeitung zwischenspeichern
             _waveSource = source.ToWaveSource();
 
-            // Event-Handler
             _capture.DataAvailable += (s, e) =>
             {
-                // Buffer für ein Frame anlegen (frame = ein Sample pro Kanal)
-                var buffer = new float[_bufferSize * 2]; // Stereo = 2 Samples pro Frame
-
+                var buffer = new float[_bufferSize * 2];
                 int read = source.Read(buffer, 0, buffer.Length);
 
                 if (read > 0)
                 {
-                    // Optional: Debug-Ausgabe
-                    // Debug.WriteLine($"[WASAPI] {read} Samples gelesen.");
-
-                    // Event feuern oder an Buffer-Service weitergeben
+                    _ringBuffer.Write(buffer, 0, read / 2); // Stereo → Frames = Samples / 2
                     SamplesAvailable?.Invoke(buffer);
                 }
                 else
@@ -107,7 +95,7 @@ namespace Sound2Light.Services.Audio
             {
                 _capture?.Stop();
             }
-            catch { /* Ignorieren, falls schon gestoppt */ }
+            catch { }
             _isRunning = false;
         }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using Sound2Light.Config;
+using Sound2Light.Contracts.Audio;
 using Sound2Light.Contracts.Services.Audio;
 using Sound2Light.Contracts.Services.Devices;
 using Sound2Light.Services.Audio;
@@ -56,7 +57,14 @@ namespace Sound2Light
             // AsioBridge (C++/CLI) Capture Service
             serviceCollection.AddSingleton<AsioBridgeCLI.AsioCaptureService>();
             // Wasapi Capture Service
-            serviceCollection.AddSingleton<WasapiCaptureService>();
+            serviceCollection.AddSingleton<WasapiCaptureService>(provider =>
+            {
+                var config = provider.GetRequiredService<IAppConfigurationService>();
+                var current = config.Settings.CurrentDevice!;
+                var deviceBufferSize = current.BufferSize ?? 512;
+                var ringBuffer = provider.GetRequiredService<WasapiRingBuffer>();
+                return new WasapiCaptureService(current, deviceBufferSize, ringBuffer);
+            });
 
             // WasapiRingBuffer – jetzt korrekt per Factory, damit RingBufferSize gesetzt wird!
             serviceCollection.AddSingleton<WasapiRingBuffer>(provider =>
@@ -65,7 +73,8 @@ namespace Sound2Light
                 var ringBufferSize = config.Settings.RingBufferSettings.RingBufferSize;
                 return new WasapiRingBuffer(ringBufferSize); // ***KEIN Multiplizieren mit 2!***
             });
-
+            serviceCollection.AddSingleton<IWasapiRingBuffer>(provider =>
+                provider.GetRequiredService<WasapiRingBuffer>());
             // ASIO-Buffer-Registrierung
 
             // AudioBufferProvider bekommt beide Buffer explizit

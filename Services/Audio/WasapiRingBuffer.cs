@@ -1,14 +1,16 @@
-﻿using Sound2Light.Contracts.Services.Audio;
+﻿using Sound2Light.Contracts.Audio;
+using Sound2Light.Contracts.Services.Audio;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Sound2Light.Services.Audio
 {
     /// <summary>
-    /// Thread-sicherer Ringbuffer für Stereo-Audio (L/R interleaved, float), implementiert IAudioAnalysisBuffer.
+    /// Thread-sicherer Ringbuffer für Stereo-Audio (L/R interleaved, float), mit Multi-Consumer-Unterstützung.
     /// </summary>
-    public class WasapiRingBuffer : IAudioAnalysisBuffer
+    public class WasapiRingBuffer : IAudioAnalysisBuffer, IWasapiRingBuffer
     {
         private readonly float[] _buffer;
         private int _writePos;
@@ -16,15 +18,15 @@ namespace Sound2Light.Services.Audio
         private readonly int _frameCapacity;
         private readonly object _sync = new();
 
+        private readonly Dictionary<string, int> _consumerReadIndices = new();
+
         public int Capacity => _frameCapacity;
+
         public int Count
         {
             get { lock (_sync) { return _frameCount; } }
         }
 
-        /// <summary>
-        /// Erzeugt einen neuen Buffer mit der gewünschten Frame-Anzahl (nicht Sample-Anzahl!).
-        /// </summary>
         public WasapiRingBuffer(int frameCapacity)
         {
             if (frameCapacity < 1) throw new ArgumentOutOfRangeException(nameof(frameCapacity));
@@ -34,10 +36,6 @@ namespace Sound2Light.Services.Audio
             _frameCount = 0;
         }
 
-        /// <summary>
-        /// Schreibe einen neuen Block von interleaved Stereo-Samples in den Puffer.
-        /// FrameCount = wie viele Stereo-Frames (je Frame: L+R).
-        /// </summary>
         public void Write(float[] data, int offset, int frameCount)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
@@ -57,11 +55,10 @@ namespace Sound2Light.Services.Audio
                         _frameCount++;
                 }
             }
+            //Debug.WriteLine($"[Write] writePos={_writePos}, frameCount={frameCount}");
+
         }
 
-        /// <summary>
-        /// Liefert die letzten frameCount Frames (links/rechts getrennt). false, wenn nicht genug Daten.
-        /// </summary>
         public bool TryGetLatestFrames(float[] left, float[] right, int frameCount)
         {
             if (left == null) throw new ArgumentNullException(nameof(left));
@@ -83,6 +80,65 @@ namespace Sound2Light.Services.Audio
                     left[i] = _buffer[readIndex];
                     right[i] = _buffer[readIndex + 1];
                 }
+                return true;
+            }
+        }
+
+        public void RegisterConsumer(string name)
+        {
+            lock (_sync)
+            {
+                if (!_consumerReadIndices.ContainsKey(name))
+                {
+                    _consumerReadIndices[name] = _writePos;
+                    Debug.WriteLine($"[RingBuffer] Consumer '{name}' registriert bei WritePos={_writePos}");
+                }
+            }
+        }
+
+        public void UnregisterConsumer(string name)
+        {
+            lock (_sync)
+            {
+                _consumerReadIndices.Remove(name);
+            }
+        }
+
+        public bool HasNewSamplesFor(string name, int frameCount)
+        {
+            lock (_sync)
+            {
+                if (!_consumerReadIndices.TryGetValue(name, out int readPos))
+                    return false;
+                int available = (_writePos - readPos + _frameCapacity) % _frameCapacity;
+                return available >= frameCount;
+            }
+        }
+
+        public bool CopySamplesFor(string name, float[] left, float[] right, int frameCount)
+        {
+            if (left == null || right == null)
+                throw new ArgumentNullException();
+
+            lock (_sync)
+            {
+                if (!_consumerReadIndices.TryGetValue(name, out int readPos))
+                    return false;
+
+                int available = (_writePos - readPos + _frameCapacity) % _frameCapacity;
+                if (available < frameCount)
+                    return false;
+
+                for (int i = 0; i < frameCount; i++)
+                {
+                    int readIndex = ((readPos + i) % _frameCapacity) * 2;
+                    left[i] = _buffer[readIndex];
+                    right[i] = _buffer[readIndex + 1];
+                }
+
+                _consumerReadIndices[name] = (readPos + frameCount) % _frameCapacity;
+                //Debug.WriteLine($"[CopySamplesFor] writePos={_writePos}, readPos={readPos}, available={available}, required={frameCount}");
+
                 return true;
             }
         }
