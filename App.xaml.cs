@@ -75,10 +75,10 @@ namespace Sound2Light
             });
             serviceCollection.AddSingleton<IWasapiRingBuffer>(provider =>
                 provider.GetRequiredService<WasapiRingBuffer>());
-            // ASIO-Buffer-Registrierung
 
-            // AudioBufferProvider bekommt beide Buffer explizit
-
+            // Audio Analysis Buffer
+            serviceCollection.AddSingleton<MonoAnalysisBuffer>();
+            serviceCollection.AddSingleton<MonoFeederService>();
 
             // ViewModels
             serviceCollection.AddSingleton<UnitSetupViewModel>();

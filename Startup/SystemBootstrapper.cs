@@ -80,7 +80,9 @@ namespace Sound2Light.Startup
                 if (started)
                 {
                     asioService.RegisterConsumer("AsioVuMeter");
-                    Debug.WriteLine("[ASIO] VuMeter-Consumer AsioVUMeter erfolgreich registriert.");
+                    Debug.WriteLine("[ASIO] AsioBuffer Consumer AsioVUMeter erfolgreich registriert.");
+                    asioService.RegisterConsumer("MonoBuffer");
+                    Debug.WriteLine("[ASIO] AsioBuffer Consumer MonoBuffer erfolgreich registriert.");
                 }
 
                 var captureViewModel = _services.GetRequiredService<UnitCaptureViewModel>();
@@ -92,21 +94,29 @@ namespace Sound2Light.Startup
                 var deviceBufferSize = current.BufferSize ?? 512;
                 var ringBuffer = _services.GetRequiredService<WasapiRingBuffer>();
                 ringBuffer.RegisterConsumer("WasapiVuMeter");
+                ringBuffer.RegisterConsumer("MonoBuffer");
 
                 var wasapiService = _services.GetRequiredService<WasapiCaptureService>();
                 wasapiService.SamplesAvailable += buffer =>
                 {
-                    //Debug.WriteLine($"[SystemBootstrapper] SamplesAvailable-Ereignis! {buffer.Length} samples");
                     int frames = buffer.Length / 2;
                     ringBuffer.Write(buffer, 0, frames);
+                    // Debug.WriteLine($"[SystemBootstrapper] SamplesAvailable: {frames} Frames geschrieben, Fill={ringBuffer.Count}");
                 };
                 wasapiService.Start();
 
-                Debug.WriteLine($"[WASAPI] VuMeter-Consumer WasapiVuMeter erfolgreich registriert.");
+                Debug.WriteLine($"[WASAPI] Wasapi-RingBuffer-Consumer WasapiVuMeter erfolgreich registriert.");
+                Debug.WriteLine($"[WASAPI] Wasapi-RingBuffer-Consumer MonoBuffer erfolgreich registriert.");
 
-                // Das fehlte bisher!
                 var captureViewModel = _services.GetRequiredService<UnitCaptureViewModel>();
                 captureViewModel.SetCaptureSource(current.Type);
+            }
+
+            // *** MonoFeederService MUSS explizit resolved werden, sonst läuft er nicht! ***
+            if (current != null && (current.Type == AudioDeviceType.Asio || current.Type == AudioDeviceType.Wasapi))
+            {
+                var monoFeeder = _services.GetRequiredService<MonoFeederService>();
+                Debug.WriteLine("[SystemBootstrapper] MonoFeederService gestartet.");
             }
 
             // Hinweis anzeigen, wenn KEIN gültiges Device da ist (aber App weiter starten!)
