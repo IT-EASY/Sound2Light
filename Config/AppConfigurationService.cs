@@ -1,73 +1,39 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Diagnostics;
 
-using Sound2Light.Config;
 using Sound2Light.Settings;
+using Sound2Light.Services.RegistryAccess;
 
 namespace Sound2Light.Config
 {
     public class AppConfigurationService : IAppConfigurationService
     {
-        private readonly string _configFilePath;
 
         public AppSettings Settings { get; private set; }
 
-        private readonly JsonSerializerOptions _serializerOptions = new()
+        public AppConfigurationService() 
         {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() },
-            WriteIndented = true
-        };
-
-        public AppConfigurationService(string configFilePath)
-        {
-            _configFilePath = configFilePath;
             Settings = new AppSettings();
         }
 
         public void LoadConfiguration()
         {
-            try
-            {
-                if (!File.Exists(_configFilePath))
-                {
-                    Debug.WriteLine($"[AppSettings] Datei nicht gefunden: {_configFilePath}");
-                    return;
-                }
+            // Registry-Lesevorgänge
+            Settings.CurrentDevice = CaptureDeviceRegistryLoader.LoadCurrentDevice();
+            Settings.PreferredCaptureDevice = CaptureDeviceRegistryLoader.LoadPreferredDevice();
+            Settings.RingBufferSettings = RingBufferRegistryLoader.LoadWasapiSettings();
 
-                var json = File.ReadAllText(_configFilePath);
-                Settings = JsonSerializer.Deserialize<AppSettings>(json, _serializerOptions) ?? new AppSettings();
-
-                Debug.WriteLine("[AppSettings] Konfiguration erfolgreich geladen.");
-            }
-            catch (Exception ex)
-            {
-                Settings = new AppSettings();
-                Debug.WriteLine($"[AppSettings] Fehler beim Laden der Konfiguration: {ex.Message}");
-                Debug.WriteLine($"[AppSettings] StackTrace: {ex.StackTrace}");
-            }
+            Debug.WriteLine("[AppSettings] Konfiguration erfolgreich aus Registry geladen.");
         }
 
         public void SaveConfiguration()
         {
-            try
-            {
-                var directory = Path.GetDirectoryName(_configFilePath);
-                if (!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory!);
-                }
+            if (Settings.CurrentDevice != null)
+                CaptureDeviceRegistryWriter.SaveCurrentDevice(Settings.CurrentDevice);
 
-                var json = JsonSerializer.Serialize(Settings, _serializerOptions);
-                File.WriteAllText(_configFilePath, json);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Fehler beim Speichern der Konfiguration: {ex.Message}");
-            }
+            if (Settings.PreferredCaptureDevice != null)
+                CaptureDeviceRegistryWriter.SavePreferredDevice(Settings.PreferredCaptureDevice);
+
+            RingBufferRegistryWriter.SaveWasapiSettings(Settings.RingBufferSettings);
         }
     }
 }

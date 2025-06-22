@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+using System.Windows;
 
 namespace Sound2Light.Views.Windows
 {
@@ -7,6 +9,7 @@ namespace Sound2Light.Views.Windows
         public SetupDMXWindow()
         {
             InitializeComponent();
+
         }
     }
 }

@@ -1,16 +1,183 @@
 ﻿<Window x:Class="Sound2Light.Views.Windows.SetupDMXWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SetupDMXWindow" Height="450" Width="800"
+        Title="DMX Mapping Setup" Height="450" Width="600"
         WindowStartupLocation="CenterOwner"
+        Background="CadetBlue"
         ResizeMode="NoResize"
         ShowInTaskbar="False">
 
-    <Grid>
-        <TextBlock Text="SetupDMXWindow (Stub)" 
-                   Foreground="White" FontSize="16"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <!-- Row 0 - Titel sACN status und zugewiesenes universe / artNET status und zugewiesenes universe -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 1 - eigenes Grid für sACN und artNET Zuweisungen -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 2 - Titel für Datenzuweisungstabelle -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 3 - Stackpanel für Zuweisungstabelle -->
+            <RowDefinition Height="Auto" />
+            <!-- Row 3 - Button Set, Clear, Ok -->
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!-- Row 0 -->
+        <TextBlock Text="enable/disable protocols and assignment of universes"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="1"
+                   FontSize="14"
+                   FontWeight="Bold" 
+                   Margin="5,5"/>
+        
+        <!-- Row 1 -->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="10,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
+                <!-- Header -->
+                <TextBlock Text="protocol"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                           FontSize="14"
+                           FontWeight="DemiBold" 
+                           Margin="0,0,0,5" />
+                <TextBlock Text="state"
+                           Grid.Row="0"
+                           Grid.Column="1"
+                           FontSize="14"
+                           FontWeight="DemiBold" 
+                           Margin="0,0,0,5"  />
+                <TextBlock Text="assign universe"
+                           Grid.Row="0"
+                           Grid.Column="2"
+                           FontSize="14"
+                           FontWeight="DemiBold" 
+                           Margin="0,0,0,5" />
+                
+                <!-- sACN -->
+                <TextBlock Text="sACN"
+                           Grid.Row="1"
+                           Grid.Column="0"
+                           FontSize="14"
+                           FontWeight="Bold" 
+                           Margin="0,0,0,5" />
+                <CheckBox Grid.Row="1"
+                          Grid.Column="1"
+                          IsChecked="{Binding SacnConfig.Enabled}" 
+                          Margin="0,0,0,5" />
+                <TextBox Text="{Binding SacnConfig.Universe}"
+                         IsEnabled="{Binding SacnConfig.Enabled}"
+                         Grid.Row="1"
+                         Grid.Column="2" 
+                         Margin="0,0,0,5" />
+
+                <!-- artNET -->
+                <TextBlock Text="artNET"
+                           Grid.Row="2"
+                           Grid.Column="0"
+                           FontSize="14"
+                           FontWeight="Bold" 
+                           Margin="0,0,0,5" />
+                <CheckBox Grid.Row="2"
+                          Grid.Column="1"
+                          IsChecked="{Binding ArtnetConfig.Enabled}" 
+                          Margin="0,0,0,5" />
+                <TextBox Text="{Binding ArtNetConfig.Universe}"
+                         IsEnabled="{Binding ArtNetConfig.Enabled}"
+                         Grid.Row="2"
+                         Grid.Column="2"
+                         Margin="0,0,0,5" />
+            </Grid>
+        </StackPanel>
+
+        <!-- Row 2 -->
+        <TextBlock Text="assign functions to channel"
+                   Grid.Row="2"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   FontSize="14"
+                   FontWeight="Bold"
+                   Margin="5,5" />
+
+        <!-- Row 3 -->
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" VerticalAlignment="Top" Grid.Row="3">
+            <DataGrid ItemsSource="{Binding OutputMappings}" AutoGenerateColumns="False" Margin="10"
+              CanUserAddRows="False" HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Funktion" Binding="{Binding OutputName}" IsReadOnly="True"/>
+
+                    <DataGridTemplateColumn Header="sACN-Channel">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding SacnChannel}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding AvailableSacnChannels}"
+                                  SelectedItem="{Binding SacnChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  MinWidth="60"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="ArtNet-Channel">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ArtNetChannel}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding AvailableArtNetChannels}"
+                                  SelectedItem="{Binding ArtNetChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  MinWidth="60"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <!-- Row 4 -->
+        <StackPanel Grid.Row="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="10,30,10,20" >
+
+            <Button Content="Set"
+                    HorizontalAlignment="Right"
+                    Width="60"
+                    Margin="5,0,5,0"
+                    Command="{Binding SetCommand}" />
+
+            <Button Content="Clear"
+                    HorizontalAlignment="Right"
+                    Width="60"
+                    Margin="5,0,5,0"
+                    Command="{Binding ClearCommand}" />
+
+            <Button Content="Close"
+                    HorizontalAlignment="Right"
+                    Width="60"
+                    Margin="5,0,5,0"
+                    Command="{Binding CloseCommand}" />
+        </StackPanel>
     </Grid>
 </Window>

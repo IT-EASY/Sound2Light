@@ -30,15 +30,10 @@ namespace Sound2Light
 
             var serviceCollection = new ServiceCollection();
 
-            // Konfigurationspfad
-            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var configDir = Path.Combine(appDataPath, "Sound2Light");
-            var configFilePath = Path.Combine(configDir, "appsettings.json");
-
             // Konfigurations-Service
             serviceCollection.AddSingleton<IAppConfigurationService>(provider =>
             {
-                var configService = new AppConfigurationService(configFilePath);
+                var configService = new AppConfigurationService();
                 configService.LoadConfiguration();
                 return configService;
             });
@@ -86,6 +81,7 @@ namespace Sound2Light
             serviceCollection.AddSingleton<PowerButtonViewModel>();
             serviceCollection.AddSingleton<MainViewModel>();
             serviceCollection.AddTransient<SetupCaptureViewModel>();
+            serviceCollection.AddTransient<SetupDMXViewModel>();
 
             // Bootstrapper
             serviceCollection.AddSingleton<ISystemBootstrapper, SystemBootstrapper>();

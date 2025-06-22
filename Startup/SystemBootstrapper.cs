@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
 
 using Sound2Light.Config;
 using Sound2Light.Contracts.Services.Devices;
 using Sound2Light.Models.Audio;
 using Sound2Light.Services.Audio;
 using Sound2Light.Services.Devices;
+using Sound2Light.Services.RegistryAccess;
 using Sound2Light.ViewModels.Main;
 using Sound2Light.ViewModels.Units;
 using Sound2Light.ViewModels.Windows;
@@ -27,8 +29,12 @@ namespace Sound2Light.Startup
             _services = services;
         }
 
-        public void Run()
+    public void Run()
         {
+            // Konfigurationsspeicher prüfen
+
+
+
             // Devices listen...
             var wasapiDevices = _services
                 .GetRequiredService<IWasapiDeviceDiscovery>()
@@ -68,6 +74,9 @@ namespace Sound2Light.Startup
                 DataContext = _services.GetRequiredService<MainViewModel>()
             };
             mainWindow.Show();
+
+            // Konfigurationsspeicher prüfen und ggf. erstellen
+            RegistryInitializer.EnsureRegistryStructure();
 
             if (current != null && current.Type == AudioDeviceType.Asio)
             {
