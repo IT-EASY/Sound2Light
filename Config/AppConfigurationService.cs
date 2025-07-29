@@ -17,10 +17,10 @@ namespace Sound2Light.Config
 
         public void LoadConfiguration()
         {
-            // Registry-Lesevorgänge
             Settings.CurrentDevice = CaptureDeviceRegistryLoader.LoadCurrentDevice();
             Settings.PreferredCaptureDevice = CaptureDeviceRegistryLoader.LoadPreferredDevice();
             Settings.RingBufferSettings = RingBufferRegistryLoader.LoadWasapiSettings();
+            Settings.DmxMapping = DmxMappingRegistryLoader.LoadDmxMapping();
 
             Debug.WriteLine("[AppSettings] Konfiguration erfolgreich aus Registry geladen.");
         }
@@ -34,6 +34,7 @@ namespace Sound2Light.Config
                 CaptureDeviceRegistryWriter.SavePreferredDevice(Settings.PreferredCaptureDevice);
 
             RingBufferRegistryWriter.SaveWasapiSettings(Settings.RingBufferSettings);
+            DmxMappingRegistryWriter.SaveDmxMapping(Settings.DmxMapping);
         }
     }
 }

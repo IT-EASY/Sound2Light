@@ -12,6 +12,7 @@ using Sound2Light.Startup;
 using Sound2Light.ViewModels.Main;
 using Sound2Light.ViewModels.Units;
 using Sound2Light.ViewModels.Windows;
+using Sound2Light.ViewModels.Addon;
 
 using System.IO;
 using System.Windows;

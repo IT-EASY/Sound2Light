@@ -14,7 +14,11 @@ namespace Sound2Light.Services.RegistryAccess
             @"Software\Sound2Light\CaptureDevices\PreferredCaptureDevice",
             @"Software\Sound2Light\RingBuffers",
             @"Software\Sound2Light\RingBuffers\WasapiDevice",
-            @"Software\Sound2Light\RingBuffers\MonoAnalysis"
+            @"Software\Sound2Light\RingBuffers\MonoAnalysis",
+            @"Software\Sound2Light\Net\sACN",
+            @"Software\Sound2Light\Net\sACN\DMX-Mapping",
+            @"Software\Sound2Light\Net\artNET",
+            @"Software\Sound2Light\Net\artNET\DMX-Mapping"
         };
 
         public static void EnsureRegistryStructure()
@@ -63,6 +67,41 @@ namespace Sound2Light.Services.RegistryAccess
                 {
                     EnsureValue(bufferKey, "LatencyMultiplier", 8);
                     EnsureValue(bufferKey, "RingBufferSize", 4096);
+                }
+            }
+            
+            // Netzwerk-Protokoll-Defaults
+            if (keyPath.EndsWith(@"Net\sACN"))
+            {
+                using var sacnKey = Registry.CurrentUser.OpenSubKey(keyPath, writable: true);
+                if (sacnKey != null)
+                {
+                    EnsureValue(sacnKey, "Enabled", 0); // aus = 0
+                    EnsureValue(sacnKey, "Universe", 10);
+                }
+            }
+            if (keyPath.EndsWith(@"Net\artNET"))
+            {
+                using var artnetKey = Registry.CurrentUser.OpenSubKey(keyPath, writable: true);
+                if (artnetKey != null)
+                {
+                    EnsureValue(artnetKey, "Enabled", 0);
+                    EnsureValue(artnetKey, "Universe", 11);
+                }
+            }
+            if (keyPath.EndsWith(@"DMX-Mapping"))
+            {
+                using var mappingKey = Registry.CurrentUser.OpenSubKey(keyPath, writable: true);
+                if (mappingKey != null)
+                {
+                    string[] defaultOutputs = new[]
+                    {
+                        "BPM", "S2L-Low", "S2L-Low-Middle", "S2L-Middle", "S2L-High", "B2L-Main", "B2L-STEM"
+                    };
+                    foreach (var output in defaultOutputs)
+                    {
+                        EnsureValue(mappingKey, output, "n/a");
+                    }
                 }
             }
         }
